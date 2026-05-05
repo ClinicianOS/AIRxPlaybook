@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI RX — Clinical Playbook & Workbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --navy: #0D2B4E;
+  --navy-light: #1A3F6A;
+  --teal: #00A693;
+  --teal-light: #E6F7F5;
+  --teal-dark: #007A6B;
+  --amber: #F59E0B;
+  --amber-light: #FEF3C7;
+  --red: #DC2626;
+  --red-light: #FEE2E2;
+  --blue: #3B82F6;
+  --blue-light: #EFF6FF;
+  --green: #10B981;
+  --green-light: #D1FAE5;
+  --purple: #7C3AED;
+  --purple-light: #EDE9FE;
+  --gray-50: #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-300: #CBD5E1;
+  --gray-400: #94A3B8;
+  --gray-500: #64748B;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1E293B;
+  --gray-900: #0F172A;
+  --font-head: 'Playfair Display', Georgia, serif;
+  --font-body: 'Nunito', Arial, sans-serif;
+  --radius: 12px;
+  --shadow: 0 4px 20px rgba(13,43,78,0.1);
+  --shadow-sm: 0 2px 8px rgba(13,43,78,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-body);background:#F0F4F8;color:var(--gray-800);line-height:1.6;font-size:16px;}
+a{color:var(--teal-dark);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ── HEADER ── */
+.site-header{background:var(--navy);padding:0;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.3);}
+.header-inner{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:0 24px;}
+.site-logo{display:flex;align-items:center;gap:12px;padding:14px 0;}
+.logo-mark{width:40px;height:40px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.logo-mark svg{width:24px;height:24px;fill:white;}
+.logo-text h1{font-family:var(--font-head);font-size:1.1rem;color:#fff;line-height:1.1;}
+.logo-text p{font-size:0.7rem;color:var(--gray-300);letter-spacing:0.08em;text-transform:uppercase;}
+.header-badge{background:rgba(0,166,147,0.2);border:1px solid rgba(0,166,147,0.4);color:#7FFFEE;font-size:0.72rem;padding:5px 12px;border-radius:20px;letter-spacing:0.05em;}
+
+/* ── NAV TABS ── */
+.nav-scroll{background:var(--navy-light);overflow-x:auto;border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav-tabs{display:flex;max-width:1200px;margin:0 auto;padding:0 24px;}
+.nav-tab{background:none;border:none;color:rgba(255,255,255,0.6);font-family:var(--font-body);font-size:0.8rem;font-weight:600;padding:14px 16px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all 0.2s;letter-spacing:0.02em;}
+.nav-tab:hover{color:#fff;background:rgba(255,255,255,0.06);}
+.nav-tab.active{color:#fff;border-bottom-color:var(--teal);background:rgba(0,166,147,0.1);}
+
+/* ── LAYOUT ── */
+.main-wrap{max-width:1200px;margin:0 auto;padding:32px 24px 64px;}
+.section{display:none;}
+.section.active{display:block;}
+
+/* ── HERO STRIP ── */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);border-radius:var(--radius);padding:40px 48px;margin-bottom:32px;color:#fff;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;right:-40px;top:-40px;width:300px;height:300px;border-radius:50%;background:rgba(0,166,147,0.12);pointer-events:none;}
+.hero-tag{display:inline-block;background:rgba(0,166,147,0.25);border:1px solid rgba(0,166,147,0.5);color:#7FFFEE;font-size:0.72rem;padding:4px 12px;border-radius:20px;margin-bottom:16px;letter-spacing:0.06em;text-transform:uppercase;}
+.hero h2{font-family:var(--font-head);font-size:2rem;margin-bottom:12px;line-height:1.2;}
+.hero p{color:rgba(255,255,255,0.8);max-width:680px;font-size:1rem;}
+.hero-meta{display:flex;gap:24px;margin-top:20px;flex-wrap:wrap;}
+.hero-meta span{display:flex;align-items:center;gap:6px;font-size:0.82rem;color:rgba(255,255,255,0.65);}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+
+/* ── CARDS ── */
+.card{background:#fff;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);border:1px solid var(--gray-200);}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:28px;}
+.card h3{font-family:var(--font-head);font-size:1.1rem;color:var(--navy);margin-bottom:10px;}
+.card p{font-size:0.9rem;color:var(--gray-600);line-height:1.65;}
+.card-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:14px;flex-shrink:0;}
+
+/* ── SECTION TITLES ── */
+.section-title{font-family:var(--font-head);font-size:1.5rem;color:var(--navy);margin-bottom:6px;}
+.section-sub{color:var(--gray-500);font-size:0.9rem;margin-bottom:24px;}
+.section-header{margin-bottom:28px;}
+.divider{height:1px;background:var(--gray-200);margin:32px 0;}
+
+/* ── SARAH CALLOUT ── */
+.sarah-box{background:linear-gradient(135deg,#E6F7F5,#F0F9FF);border-left:4px solid var(--teal);border-radius:var(--radius);padding:20px 24px;margin:24px 0;display:flex;gap:16px;}
+.sarah-avatar{width:52px;height:52px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.sarah-content h4{color:var(--teal-dark);font-weight:700;font-size:0.85rem;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:4px;}
+.sarah-content p{font-size:0.92rem;color:var(--gray-700);line-height:1.6;}
+
+/* ── DEFINITION BLOCKS ── */
+.def-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:24px 0;}
+.def-card{border-radius:10px;padding:18px 20px;border:1px solid var(--gray-200);}
+.def-term{font-weight:800;font-size:0.95rem;margin-bottom:6px;}
+.def-body{font-size:0.84rem;color:var(--gray-600);line-height:1.6;}
+.def-example{font-size:0.8rem;margin-top:8px;padding:8px 10px;border-radius:6px;font-style:italic;line-height:1.5;}
+
+/* ── TOOLS TABLE ── */
+.tools-table{width:100%;border-collapse:collapse;font-size:0.875rem;margin:20px 0;}
+.tools-table th{background:var(--navy);color:#fff;padding:11px 14px;text-align:left;font-weight:600;letter-spacing:0.03em;}
+.tools-table th:first-child{border-radius:8px 0 0 0;}
+.tools-table th:last-child{border-radius:0 8px 0 0;}
+.tools-table td{padding:11px 14px;border-bottom:1px solid var(--gray-200);vertical-align:top;}
+.tools-table tr:nth-child(even) td{background:var(--gray-50);}
+.tools-table tr:hover td{background:var(--teal-light);}
+.pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;letter-spacing:0.03em;}
+.pill-teal{background:var(--teal-light);color:var(--teal-dark);}
+.pill-amber{background:var(--amber-light);color:#92400E;}
+.pill-purple{background:var(--purple-light);color:#5B21B6;}
+.pill-blue{background:var(--blue-light);color:#1D4ED8;}
+.pill-green{background:var(--green-light);color:#065F46;}
+.pill-red{background:var(--red-light);color:#991B1B;}
+
+/* ── HIERARCHY VISUAL ── */
+.hier-wrap{display:flex;flex-direction:column;align-items:center;gap:0;margin:28px 0;}
+.hier-level{display:flex;flex-direction:column;align-items:center;width:100%;}
+.hier-box{border-radius:12px;padding:14px 20px;text-align:center;position:relative;cursor:pointer;transition:transform 0.15s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.hier-box:hover{transform:scale(1.02);}
+.hier-arrow{height:28px;width:2px;background:var(--gray-300);margin:0 auto;position:relative;}
+.hier-arrow::after{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border:8px solid transparent;border-top:10px solid var(--gray-300);}
+.hier-l1{background:var(--navy);color:#fff;width:90%;max-width:680px;}
+.hier-l2{background:var(--teal-dark);color:#fff;width:75%;max-width:560px;}
+.hier-l3{background:var(--teal);color:#fff;width:60%;max-width:460px;}
+.hier-l4{background:var(--teal-light);color:var(--teal-dark);border:2px solid var(--teal);width:50%;max-width:380px;}
+.hier-label{font-weight:700;font-size:1rem;}
+.hier-sub{font-size:0.78rem;opacity:0.85;}
+
+/* ── CHART WRAP ── */
+.chart-card{background:#fff;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);border:1px solid var(--gray-200);margin-bottom:28px;}
+.chart-title{font-family:var(--font-head);font-size:1.05rem;color:var(--navy);margin-bottom:4px;}
+.chart-desc{font-size:0.82rem;color:var(--gray-500);margin-bottom:18px;}
+.chart-wrap{position:relative;height:300px;}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:24px 0;}
+.stat-box{background:#fff;border-radius:10px;padding:18px 16px;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--gray-200);}
+.stat-num{font-family:var(--font-head);font-size:1.9rem;font-weight:700;line-height:1;}
+.stat-label{font-size:0.78rem;color:var(--gray-500);margin-top:4px;line-height:1.3;}
+.stat-teal .stat-num{color:var(--teal-dark);}
+.stat-amber .stat-num{color:#D97706;}
+.stat-navy .stat-num{color:var(--navy);}
+.stat-green .stat-num{color:#059669;}
+
+/* ── GLOSSARY CARDS ── */
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-top:20px;}
+.gloss-card{border-radius:10px;background:#fff;border:1px solid var(--gray-200);padding:18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.gloss-card:hover{box-shadow:var(--shadow);border-color:var(--teal);transform:translateY(-2px);}
+.gloss-front,.gloss-back{transition:opacity 0.3s;}
+.gloss-back{display:none;font-size:0.83rem;color:var(--gray-600);line-height:1.6;}
+.gloss-card.flipped .gloss-front{display:none;}
+.gloss-card.flipped .gloss-back{display:block;}
+.gloss-term{font-weight:800;font-size:0.95rem;color:var(--navy);margin-bottom:6px;}
+.gloss-hint{font-size:0.75rem;color:var(--gray-400);}
+.gloss-category{position:absolute;top:12px;right:12px;}
+.gloss-card.flipped{background:var(--teal-light);}
+
+/* ── WORKBOOK ── */
+.wb-section{margin-bottom:36px;}
+.wb-section h3{font-family:var(--font-head);font-size:1.15rem;color:var(--navy);margin-bottom:6px;}
+.wb-section p{font-size:0.88rem;color:var(--gray-500);margin-bottom:16px;}
+.wb-q{background:#fff;border-radius:10px;border:1px solid var(--gray-200);padding:20px 22px;margin-bottom:16px;}
+.wb-q-num{font-size:0.75rem;font-weight:700;color:var(--teal-dark);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;}
+.wb-q-text{font-size:0.95rem;color:var(--gray-800);margin-bottom:14px;line-height:1.6;}
+.wb-options{display:flex;flex-direction:column;gap:8px;}
+.wb-option{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;border:1.5px solid var(--gray-200);cursor:pointer;font-size:0.875rem;color:var(--gray-700);transition:all 0.15s;}
+.wb-option:hover{border-color:var(--teal);background:var(--teal-light);color:var(--teal-dark);}
+.wb-option input{margin-top:1px;accent-color:var(--teal);}
+.wb-answer{display:none;margin-top:14px;padding:12px 14px;border-radius:8px;font-size:0.875rem;line-height:1.6;}
+.wb-answer.correct{background:var(--green-light);color:#065F46;border:1px solid #6EE7B7;}
+.wb-answer.incorrect{background:var(--red-light);color:#991B1B;border:1px solid #FCA5A5;}
+.wb-btn{background:var(--navy);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:var(--font-body);font-size:0.875rem;font-weight:600;cursor:pointer;margin-top:10px;transition:background 0.15s;}
+.wb-btn:hover{background:var(--teal-dark);}
+.match-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.match-term{font-weight:700;font-size:0.9rem;color:var(--navy);background:var(--blue-light);border-radius:6px;padding:6px 12px;min-width:180px;}
+.match-arrow{color:var(--gray-400);font-size:1.2rem;}
+.match-select{border:1.5px solid var(--gray-200);border-radius:6px;padding:6px 10px;font-family:var(--font-body);font-size:0.875rem;color:var(--gray-700);background:#fff;cursor:pointer;min-width:220px;}
+.match-select:focus{outline:none;border-color:var(--teal);}
+.reflect-box{width:100%;min-height:90px;border:1.5px solid var(--gray-200);border-radius:8px;padding:12px 14px;font-family:var(--font-body);font-size:0.875rem;color:var(--gray-700);resize:vertical;line-height:1.6;}
+.reflect-box:focus{outline:none;border-color:var(--teal);}
+.checklist-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-100);}
+.checklist-item label{font-size:0.9rem;color:var(--gray-700);cursor:pointer;line-height:1.5;}
+.checklist-item input{margin-top:2px;accent-color:var(--teal);width:16px;height:16px;flex-shrink:0;}
+
+/* ── ETHICS BOX ── */
+.ethics-card{border-radius:var(--radius);padding:20px 24px;background:linear-gradient(135deg,var(--amber-light),#FFF7ED);border:1px solid var(--amber);margin:20px 0;}
+.ethics-card h4{color:#92400E;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.ethics-card ul{padding-left:18px;font-size:0.9rem;color:#78350F;line-height:1.8;}
+
+/* ── KEY POINT BLOCKS ── */
+.key-point{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:8px;background:var(--blue-light);border-left:3px solid var(--blue);margin:12px 0;font-size:0.9rem;color:var(--gray-700);}
+.key-icon{font-size:1.1rem;flex-shrink:0;margin-top:2px;}
+
+/* ── AI PIPELINE ── */
+.pipeline{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:20px 0;}
+.pipe-step{flex:1;min-width:130px;background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:14px 12px;text-align:center;position:relative;margin:4px;}
+.pipe-step h5{font-size:0.85rem;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.pipe-step p{font-size:0.75rem;color:var(--gray-500);line-height:1.4;}
+.pipe-num{width:24px;height:24px;border-radius:50%;background:var(--teal);color:#fff;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;}
+.pipe-arrow{font-size:1.3rem;color:var(--gray-300);flex-shrink:0;margin:0 -2px;}
+
+/* ── TABS WITHIN SECTION ── */
+.inner-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.inner-tab{background:#fff;border:1.5px solid var(--gray-200);border-radius:20px;padding:7px 16px;font-size:0.82rem;font-weight:600;cursor:pointer;color:var(--gray-600);transition:all 0.15s;}
+.inner-tab.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* ── FOOTER ── */
+.playbook-footer{text-align:center;padding:24px;font-size:0.8rem;color:var(--gray-400);border-top:1px solid var(--gray-200);margin-top:40px;}
+
+@media(max-width:640px){
+  .main-wrap{padding:20px 14px 48px;}
+  .hero{padding:28px 24px;}
+  .hero h2{font-size:1.5rem;}
+  .stat-row{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="site-logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+      </div>
+      <div class="logo-text">
+        <h1>AI RX</h1>
+        <p>Clinical Playbook &amp; Workbook</p>
+      </div>
+    </div>
+    <span class="header-badge">NHS · UK Edition · 2026</span>
+  </div>
+  <nav class="nav-scroll">
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showSection('overview',this)">🏠 Overview</button>
+      <button class="nav-tab" onclick="showSection('education',this)">🎓 Education</button>
+      <button class="nav-tab" onclick="showSection('admin',this)">🗂️ Administration</button>
+      <button class="nav-tab" onclick="showSection('research',this)">🔬 Research</button>
+      <button class="nav-tab" onclick="showSection('qi',this)">📈 Quality Improvement</button>
+      <button class="nav-tab" onclick="showSection('diagnostics',this)">🩺 Diagnostics</button>
+      <button class="nav-tab" onclick="showSection('glossary',this)">📚 Glossary</button>
+      <button class="nav-tab" onclick="showSection('workbook',this)">✏️ Workbook</button>
+      <button class="nav-tab" onclick="showSection('toolkit',this)">🧰 AI Toolkit</button>
+    </div>
+  </nav>
+</header>
+
+<main class="main-wrap">
+
+<!-- ═══════════════════════════════ OVERVIEW ═══════════════════════════════ -->
+<div id="sec-overview" class="section active">
+  <div class="hero">
+    <span class="hero-tag">AI Rx Clinical Playbook &amp; Workbook</span>
+    <h2>AI Rx — Your Clinical Guide to Artificial Intelligence</h2>
+    <p>A practical, clinically grounded guide for doctors, nurses, and allied health professionals exploring how AI transforms every stage of patient care — from triage to discharge and beyond.</p>
+    <div class="hero-meta">
+      <span><span class="dot"></span>8 Clinical Domains</span>
+      <span><span class="dot"></span>50+ Real AI Tools</span>
+      <span><span class="dot"></span>NHS-aligned Examples</span>
+      <span><span class="dot"></span>Pre-course Workbook Included</span>
+    </div>
+  </div>
+
+  <div class="sarah-box">
+    <div class="sarah-avatar">👩</div>
+    <div class="sarah-content">
+      <h4>Our Clinical Thread — Meet Sarah</h4>
+      <p><strong>Sarah, 45, arrives at A&E breathless and coughing during the winter flu season.</strong> Throughout every section of this playbook, we follow her journey — from triage to discharge — seeing how AI shapes her care at each step. She is our clinical anchor. Every concept connects back to her story.</p>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h2 class="section-title">What is Artificial Intelligence?</h2>
+    <p class="section-sub">The OECD definition — and what it means for your clinical practice</p>
+  </div>
+
+  <div class="card" style="margin-bottom:24px;">
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;">
+      <div style="flex:1;min-width:260px;">
+        <p style="font-size:1rem;color:var(--gray-700);line-height:1.75;border-left:4px solid var(--teal);padding-left:16px;margin-bottom:16px;">
+          <em>"An AI system is a machine-based system that, for explicit or implicit objectives, infers from the input it receives how to generate outputs such as predictions, content, recommendations, or decisions that can influence physical or virtual environments."</em>
+        </p>
+        <p style="font-size:0.85rem;color:var(--gray-500);">— OECD Definition of AI, adopted by the UK Government</p>
+      </div>
+      <div style="flex:1;min-width:260px;background:var(--teal-light);border-radius:10px;padding:18px;">
+        <p style="font-weight:700;color:var(--teal-dark);font-size:0.9rem;margin-bottom:10px;">🩺 In plain English for clinicians:</p>
+        <p style="font-size:0.875rem;color:var(--gray-700);line-height:1.7;">AI is a computer system trained on vast amounts of data — like X-rays, ECGs, or clinical notes — that can then make predictions, flag abnormalities, or suggest diagnoses <strong>faster and sometimes more accurately than a human alone</strong>. It is a <em>tool</em>, not a replacement for clinical judgement.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="section-title" style="font-size:1.2rem;margin-bottom:16px;">The AI Hierarchy — From Broadest to Most Specific</h3>
+  <div class="hier-wrap">
+    <div class="hier-level">
+      <div class="hier-box hier-l1">
+        <div>
+          <div class="hier-label">🤖 Artificial Intelligence (AI)</div>
+          <div class="hier-sub">Any computer system mimicking human intelligence • Decision-making • Pattern recognition</div>
+        </div>
+      </div>
+    </div>
+    <div class="hier-arrow"></div>
+    <div class="hier-level">
+      <div class="hier-box hier-l2">
+        <div>
+          <div class="hier-label">📊 Machine Learning (ML)</div>
+          <div class="hier-sub">Systems that learn from data without being explicitly programmed • Predicts sepsis risk from vital signs</div>
+        </div>
+      </div>
+    </div>
+    <div class="hier-arrow"></div>
+    <div class="hier-level">
+      <div class="hier-box hier-l3">
+        <div>
+          <div class="hier-label">🧠 Deep Learning (DL)</div>
+          <div class="hier-sub">Multi-layered neural networks • Detects pneumonia on chest X-rays • Reads ECGs • Analyses blood films</div>
+        </div>
+      </div>
+    </div>
+    <div class="hier-arrow"></div>
+    <div class="hier-level">
+      <div class="hier-box hier-l4">
+        <div>
+          <div class="hier-label">💬 Large Language Models (LLMs)</div>
+          <div class="hier-sub">Trained on text • ChatGPT, Gemini, Claude • Generate clinical notes, summarise research, answer questions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="text-align:center;font-size:0.8rem;color:var(--gray-400);margin-top:8px;">Each layer is a subset of the one above it. LLMs are a form of Deep Learning, which is a form of ML, which is a form of AI.</p>
+
+  <div class="divider"></div>
+
+  <h3 class="section-title" style="font-size:1.2rem;margin-bottom:8px;">How Does AI Actually Learn? The Machine Learning Pipeline</h3>
+  <p class="section-sub">Using pneumonia detection on chest X-rays as our example:</p>
+
+  <div class="pipeline">
+    <div class="pipe-step">
+      <div class="pipe-num">1</div>
+      <h5>Data Collection</h5>
+      <p>10,000 chest X-rays labelled "pneumonia" or "normal" by radiologists</p>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="pipe-num">2</div>
+      <h5>Training</h5>
+      <p>Algorithm studies patterns — areas of consolidation, effusion, infiltrates</p>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="pipe-num">3</div>
+      <h5>Validation</h5>
+      <p>Tested on unseen X-rays to check accuracy — sensitivity &amp; specificity calculated</p>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="pipe-num">4</div>
+      <h5>Deployment</h5>
+      <p>Runs in A&E radiology — flags Sarah's subtle consolidation in seconds</p>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="pipe-num">5</div>
+      <h5>Feedback Loop</h5>
+      <p>Clinician confirms/corrects → model continues to improve over time</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <h3 class="section-title" style="font-size:1.2rem;margin-bottom:16px;">Core AI Concepts — Quick Definitions</h3>
+  <div class="def-grid">
+    <div class="def-card" style="background:var(--blue-light);border-color:#BFDBFE;">
+      <div class="def-term" style="color:#1D4ED8;">Algorithm</div>
+      <div class="def-body">A set of rules or instructions a computer follows to perform a task.</div>
+      <div class="def-example" style="background:#DBEAFE;color:#1E40AF;">🩺 Like a clinical protocol — "If Sp0₂ &lt; 94%, start oxygen" is an algorithm.</div>
+    </div>
+    <div class="def-card" style="background:var(--teal-light);border-color:#99E6DD;">
+      <div class="def-term" style="color:var(--teal-dark);">Training Data</div>
+      <div class="def-body">The historical information used to teach an AI model.</div>
+      <div class="def-example" style="background:#B2F0E8;color:#005A50;">🩺 5 years of ECGs labelled "AF" or "Normal" used to train a cardiac AI.</div>
+    </div>
+    <div class="def-card" style="background:var(--purple-light);border-color:#C4B5FD;">
+      <div class="def-term" style="color:#5B21B6;">Neural Network</div>
+      <div class="def-body">Layers of interconnected "nodes" that mimic how brain neurons process information.</div>
+      <div class="def-example" style="background:#DDD6FE;color:#4C1D95;">🩺 Each layer detects more complex patterns — edges → shapes → lesions on an MRI.</div>
+    </div>
+    <div class="def-card" style="background:var(--amber-light);border-color:#FCD34D;">
+      <div class="def-term" style="color:#92400E;">NLP — Natural Language Processing</div>
+      <div class="def-body">AI that reads, understands, and generates human language.</div>
+      <div class="def-example" style="background:#FDE68A;color:#78350F;">🩺 Reads Sarah's discharge summary and flags "shortness of breath" as a key finding.</div>
+    </div>
+    <div class="def-card" style="background:var(--green-light);border-color:#6EE7B7;">
+      <div class="def-term" style="color:#065F46;">Supervised Learning</div>
+      <div class="def-body">Training with labelled examples — the AI knows the "right answer."</div>
+      <div class="def-example" style="background:#A7F3D0;color:#064E3B;">🩺 10,000 skin lesion photos labelled "benign" / "malignant" teach a dermatology AI.</div>
+    </div>
+    <div class="def-card" style="background:var(--red-light);border-color:#FCA5A5;">
+      <div class="def-term" style="color:#991B1B;">Hallucination</div>
+      <div class="def-body">When an AI generates confident but factually incorrect information.</div>
+      <div class="def-example" style="background:#FEE2E2;color:#7F1D1D;">⚠️ A chatbot inventing a drug dosage. Critical risk in clinical AI — always verify outputs.</div>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-box stat-teal"><div class="stat-num">86%</div><div class="stat-label">of NHS Trusts plan AI adoption by 2026 (NHS England)</div></div>
+    <div class="stat-box stat-amber"><div class="stat-num">£3.5B</div><div class="stat-label">UK Government AI in health investment by 2030</div></div>
+    <div class="stat-box stat-navy"><div class="stat-num">20%</div><div class="stat-label">improvement in chest X-ray detection with AI assistance</div></div>
+    <div class="stat-box stat-green"><div class="stat-num">2hrs</div><div class="stat-label">average time saved per doctor daily with AI documentation</div></div>
+  </div>
+
+  <div class="ethics-card">
+    <h4>⚖️ Core Ethical Principles for AI in NHS Practice</h4>
+    <ul>
+      <li><strong>Transparency:</strong> Clinicians should understand how an AI tool reaches its conclusions (explainability)</li>
+      <li><strong>Bias awareness:</strong> AI trained on non-diverse data can underperform in certain populations</li>
+      <li><strong>Accountability:</strong> The clinician remains legally and professionally responsible — AI assists, not decides</li>
+      <li><strong>Data governance:</strong> NHS data is subject to UK GDPR, the Data Protection Act 2018, and NHS DSPT requirements</li>
+      <li><strong>Human in the loop:</strong> AI recommendations should always be subject to clinical review before acting</li>
+    </ul>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">AI Adoption Trajectory in UK Healthcare</div>
+    <div class="chart-desc">Percentage of NHS Trusts using at least one AI-powered clinical tool (projected)</div>
+    <div class="chart-wrap"><canvas id="adoptionChart" role="img" aria-label="Line chart showing AI adoption in NHS Trusts rising from 12% in 2018 to an estimated 86% in 2026">AI adoption data shown in chart</canvas></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ EDUCATION ═══════════════════════════════ -->
+<div id="sec-education" class="section">
+  <div class="hero">
+    <span class="hero-tag">Section 2 — Education</span>
+    <h2>AI in Medical Education</h2>
+    <p>From adaptive learning for medical students to OSCE simulation, CPD for consultants, and AI-powered patient education tools.</p>
+  </div>
+
+  <div class="sarah-box">
+    <div class="sarah-avatar">👩</div>
+    <div class="sarah-content">
+      <h4>Sarah's Story — Education in Action</h4>
+      <p>The junior doctor treating Sarah was partly trained using <strong>AI-powered OSCE simulation software</strong> that coached him on breathless patient examinations. Sarah herself later received <strong>AI-generated personalised discharge information</strong> about community-acquired pneumonia written at the right reading level for her health literacy.</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon" style="background:var(--blue-light);">🎓</div>
+      <h3>Adaptive Learning Platforms</h3>
+      <p>AI analyses a student's performance and adjusts question difficulty, identifies knowledge gaps, and creates personalised revision plans — like a personal tutor available 24/7.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Example: A medical student weak on cardiology gets more ECG questions automatically served until they reach competency threshold.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--green-light);">🧑‍💻</div>
+      <h3>OSCE &amp; Simulation Training</h3>
+      <p>AI-powered standardised patients for clinical skills practice. Students practise history-taking and clinical reasoning on virtual patients that respond like real humans.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Example: Practising the "Breathless Patient" consultation before meeting Sarah in real life.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--amber-light);">📖</div>
+      <h3>Research &amp; Literature Assistance</h3>
+      <p>AI summarises textbooks, generates case-based questions, and helps educators create teaching materials and MCQs aligned to GMC curriculum outcomes.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Example: A consultant uploads new NICE guidelines on pneumonia; AI generates a 20-question assessment for junior doctors.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--purple-light);">🤝</div>
+      <h3>Patient Education</h3>
+      <p>AI tailors health information to a patient's literacy level, language, and condition — improving discharge understanding and reducing readmissions.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Example: Sarah receives a discharge leaflet in plain English, automatically generated and personalised to her case.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--teal-light);">🏥</div>
+      <h3>CPD &amp; Continuing Medical Education</h3>
+      <p>AI tracks a consultant's CPD portfolio, identifies learning gaps, recommends courses and webinars, and helps write reflective practice entries for revalidation.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Example: AI scans your e-portfolio and flags "limited documented learning in Sepsis Management last 12 months."</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--red-light);">📝</div>
+      <h3>Assessment &amp; Feedback</h3>
+      <p>AI marks written answers, gives instant formative feedback, and identifies common misconceptions across a cohort — helping educators refine teaching.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Example: 200 students submit SAQs on respiratory management; AI identifies 60% lack understanding of non-invasive ventilation criteria.</p>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Impact of AI-Assisted Learning on Assessment Performance</div>
+    <div class="chart-desc">Comparison of student exam scores before and after introduction of AI adaptive learning platforms (% pass rate)</div>
+    <div class="chart-wrap"><canvas id="eduChart" role="img" aria-label="Bar chart comparing exam pass rates before and after AI tools across five subject areas">Data shown in chart</canvas></div>
+  </div>
+
+  <h3 class="section-title" style="font-size:1.2rem;margin-bottom:4px;margin-top:24px;">Key AI Tools &amp; Platforms in Medical Education</h3>
+  <p class="section-sub">Tools used globally and in NHS/UK settings</p>
+  <table class="tools-table">
+    <thead><tr><th>Tool / Platform</th><th>What it Does</th><th>Best For</th><th>Link</th></tr></thead>
+    <tbody>
+      <tr><td><strong>AMBOSS</strong></td><td>AI-powered qbank with adaptive learning; 60,000+ medical questions with clinical decision support</td><td><span class="pill pill-blue">Medical Students</span> <span class="pill pill-teal">Postgrads</span></td><td><a href="https://www.amboss.com" target="_blank">amboss.com</a></td></tr>
+      <tr><td><strong>Osmosis by Elsevier</strong></td><td>Video-based adaptive learning platform with AI-driven spaced repetition flashcards</td><td><span class="pill pill-blue">Medical Students</span></td><td><a href="https://www.osmosis.org" target="_blank">osmosis.org</a></td></tr>
+      <tr><td><strong>Google NotebookLM</strong></td><td>Upload clinical guidelines and get AI to create summaries, FAQs, podcasts, and teaching materials</td><td><span class="pill pill-teal">Educators</span> <span class="pill pill-purple">All Levels</span></td><td><a href="https://notebooklm.google.com" target="_blank">notebooklm.google</a></td></tr>
+      <tr><td><strong>Rhazes.AI</strong></td><td>AI clinical decision support + medical education; OSCE prep and clinical reasoning scenarios</td><td><span class="pill pill-teal">Postgrads</span> <span class="pill pill-green">Educators</span></td><td><a href="https://rhazes.ai" target="_blank">rhazes.ai</a></td></tr>
+      <tr><td><strong>Aquifer</strong></td><td>Virtual patient cases with AI feedback for clinical reasoning and diagnosis practice</td><td><span class="pill pill-blue">Medical Students</span></td><td><a href="https://www.aquifer.education" target="_blank">aquifer.education</a></td></tr>
+      <tr><td><strong>ChatGPT / Claude</strong></td><td>Generate MCQs, OSCE stations, case studies; explain complex topics; draft teaching plans</td><td><span class="pill pill-purple">All Levels</span></td><td><a href="https://chat.openai.com" target="_blank">openai.com</a></td></tr>
+      <tr><td><strong>Glasp AI</strong></td><td>AI-powered reading assistant; highlights and summarises medical literature with AI explanations</td><td><span class="pill pill-teal">Educators</span> <span class="pill pill-blue">Researchers</span></td><td><a href="https://glasp.co" target="_blank">glasp.co</a></td></tr>
+    </tbody>
+  </table>
+
+  <div class="key-point"><span class="key-icon">🔑</span><span><strong>Prompt Engineering for Education:</strong> When using ChatGPT or Claude to generate teaching content, always specify: (1) the target audience (F1 doctor, medical student), (2) the desired format (MCQ, OSCE station, summary), and (3) the clinical context. Example: <em>"You are a consultant chest physician. Create a 5-question MCQ on community-acquired pneumonia for an F1 doctor, using real-world clinical scenarios."</em></span></div>
+</div>
+
+<!-- ═══════════════════════════════ ADMINISTRATION ═══════════════════════════════ -->
+<div id="sec-admin" class="section">
+  <div class="hero">
+    <span class="hero-tag">Section 3 — Administration</span>
+    <h2>AI in Clinical Administration</h2>
+    <p>Reducing documentation burden, streamlining scheduling, automating coding, and improving patient flow — giving clinicians time back for patient care.</p>
+  </div>
+
+  <div class="sarah-box">
+    <div class="sarah-avatar">👩</div>
+    <div class="sarah-content">
+      <h4>Sarah's Story — Administration in Action</h4>
+      <p>As Sarah's doctor speaks during the consultation, <strong>ambient AI voice technology</strong> transcribes the encounter directly into the Electronic Health Record (EHR), creating a structured note in real time. When Sarah is discharged, AI automatically generates her SNOMED-CT clinical codes and submits them for NHS tariff billing — freeing the team from hours of paperwork.</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon" style="background:var(--teal-light);">🎙️</div>
+      <h3>Ambient Voice Documentation</h3>
+      <p>AI listens to the clinician-patient conversation and automatically produces a structured clinical note in the EHR — cutting documentation time by up to 70%.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Nuance DAX Copilot is now live in several NHS Trusts in England.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--blue-light);">📅</div>
+      <h3>Intelligent Scheduling &amp; Triage</h3>
+      <p>AI predicts no-shows, optimises appointment slots, triages referrals by clinical urgency, and manages waiting lists — reducing RTT (Referral to Treatment) times.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 AI predicted a 23% reduction in DNA (Did Not Attend) rates in a North West NHS pilot.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--amber-light);">🏷️</div>
+      <h3>Clinical Coding &amp; Billing</h3>
+      <p>NLP tools scan discharge summaries and automatically assign ICD-10/SNOMED-CT codes — improving accuracy, speed, and NHS tariff revenue capture.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Reduces coding errors that cost NHS Trusts an estimated £1.3 billion annually in lost income.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--purple-light);">💌</div>
+      <h3>Patient Communication</h3>
+      <p>AI drafts appointment reminders, follow-up messages, and personalised health alerts via SMS or app — in the patient's preferred language and reading level.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Accurx AI messaging is used by 98% of GP practices in England.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--green-light);">📋</div>
+      <h3>Referral Management</h3>
+      <p>AI reviews referral letters for completeness, suggests appropriate pathways, flags urgent cases, and routes referrals to the right specialist automatically.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Reduces inappropriate referrals by up to 30% in community cardiology pathways.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--red-light);">🏥</div>
+      <h3>Bed Management &amp; Flow</h3>
+      <p>Predictive AI forecasts admission surges, optimises bed allocation, predicts discharge dates, and alerts bed managers to patients ready for discharge.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Google's DeepMind helped UCLH predict patient flow, cutting delayed discharges significantly.</p>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Time Saved Per Clinician Daily with AI Documentation Tools</div>
+    <div class="chart-desc">Average hours saved per day by clinical role when using ambient AI documentation (Nuance DAX Copilot trial data)</div>
+    <div class="chart-wrap"><canvas id="adminChart" role="img" aria-label="Bar chart showing time saved by different clinical roles using AI documentation tools">Data shown in chart</canvas></div>
+  </div>
+
+  <h3 class="section-title" style="font-size:1.2rem;margin-bottom:4px;margin-top:24px;">Key AI Tools in Clinical Administration</h3>
+  <table class="tools-table">
+    <thead><tr><th>Tool</th><th>Function</th><th>Category</th><th>Where Used</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Nuance DAX Copilot</strong></td><td>Ambient voice-to-note AI; creates structured clinical documentation in real time during consultations</td><td><span class="pill pill-teal">Documentation</span></td><td>NHS Trusts, USA (Microsoft)</td></tr>
+      <tr><td><strong>Suki AI</strong></td><td>Voice-activated clinical assistant; dictation, order entry, and documentation with EHR integration</td><td><span class="pill pill-teal">Documentation</span></td><td>USA, expanding internationally</td></tr>
+      <tr><td><strong>Abridge</strong></td><td>AI summarises doctor-patient conversations; produces patient-friendly visit summaries</td><td><span class="pill pill-blue">Documentation</span></td><td>USA (Epic integrated)</td></tr>
+      <tr><td><strong>Dragon Medical One</strong></td><td>Clinical speech recognition platform; AI-powered dictation for clinical notes</td><td><span class="pill pill-teal">Documentation</span></td><td>NHS England (widespread)</td></tr>
+      <tr><td><strong>Accurx</strong></td><td>AI-assisted patient messaging, triage, and referrals platform for UK primary care</td><td><span class="pill pill-purple">Communication</span></td><td>98% of English GP practices</td></tr>
+      <tr><td><strong>Epic + AI Suite</strong></td><td>EHR with AI-embedded features: smart scheduling, predictive deterioration, automated coding</td><td><span class="pill pill-amber">EHR Platform</span></td><td>Major NHS Trusts (UCLH, Barts, etc.)</td></tr>
+      <tr><td><strong>Palantir NHS Federated Data Platform</strong></td><td>AI-powered operational intelligence: bed management, waiting lists, predictive analytics</td><td><span class="pill pill-green">Operations</span></td><td>NHS England national rollout</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════ RESEARCH ═══════════════════════════════ -->
+<div id="sec-research" class="section">
+  <div class="hero">
+    <span class="hero-tag">Section 4 — Research</span>
+    <h2>AI in Medical Research</h2>
+    <p>From systematic reviews to trial matching, data analysis, and grant writing — AI is accelerating the pace of medical discovery.</p>
+  </div>
+
+  <div class="sarah-box">
+    <div class="sarah-avatar">👩</div>
+    <div class="sarah-content">
+      <h4>Sarah's Story — Research in Action</h4>
+      <p>The consultant treating Sarah uses an AI tool to instantly find <strong>the 5 most relevant clinical trials</strong> on community-acquired pneumonia management published in the last 2 years — a task that would have taken hours of manual searching. Sarah is also identified by an AI screening tool as a <strong>potential participant</strong> for a respiratory research study based on her clinical profile.</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon" style="background:var(--blue-light);">📄</div>
+      <h3>Systematic Review Acceleration</h3>
+      <p>AI screens thousands of abstracts in hours, identifies relevant papers, extracts data, and reduces manual screening time by up to 80% in systematic reviews.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 A Cochrane-equivalent review that took 6 months can now be structured in 6 weeks.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--green-light);">🧬</div>
+      <h3>Clinical Trial Design &amp; Recruitment</h3>
+      <p>AI identifies eligible trial participants from EHR data, helps design adaptive trial protocols, and predicts patient dropout or adverse events.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Tempus AI matched Sarah as eligible for a pneumonia trial from her clinical record in under 1 minute.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--teal-light);">📊</div>
+      <h3>Statistical Analysis &amp; Data Science</h3>
+      <p>AI automates statistical analysis, identifies confounders, visualises data patterns, and even suggests appropriate statistical tests for a given dataset.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 "Describe my dataset" → AI produces descriptive stats, distributions, and suggests Cox regression for a survival analysis.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--purple-light);">✍️</div>
+      <h3>Writing &amp; Grant Support</h3>
+      <p>AI helps draft research proposals, structures manuscripts to journal guidelines, suggests relevant citations, and polishes academic writing — without writing it for you.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Reduces time to first draft of a grant application from 3 weeks to 3 days.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--amber-light);">🔍</div>
+      <h3>Literature Discovery</h3>
+      <p>AI finds conceptually related papers beyond keyword matching — using semantic search to surface studies you would never have found with a PubMed search alone.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Search "pneumonia in immunocompromised elderly" → AI finds 12 related papers from tangential fields including geriatrics and oncology.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--red-light);">🤖</div>
+      <h3>Genomics &amp; Drug Discovery</h3>
+      <p>AI analyses genomic data at scale, identifies drug targets, predicts protein structures (AlphaFold), and accelerates novel therapy development.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 DeepMind's AlphaFold has predicted the structure of 200 million proteins — a 50-year scientific problem solved in months.</p>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">AI vs Traditional Methods: Time Required for Systematic Review Stages</div>
+    <div class="chart-desc">Hours required per review stage (estimate from published methodology studies)</div>
+    <div class="chart-wrap" style="height:320px;"><canvas id="researchChart" role="img" aria-label="Horizontal bar chart comparing time taken for research tasks with and without AI">Data shown in chart</canvas></div>
+  </div>
+
+  <h3 class="section-title" style="font-size:1.2rem;margin-bottom:4px;margin-top:24px;">Key AI Research Tools</h3>
+  <table class="tools-table">
+    <thead><tr><th>Tool</th><th>Function</th><th>Best For</th><th>Access</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Elicit</strong></td><td>AI research assistant; searches PubMed, extracts key data from papers, summarises findings automatically</td><td><span class="pill pill-blue">Literature Review</span></td><td><a href="https://elicit.com" target="_blank">elicit.com</a> (Free tier)</td></tr>
+      <tr><td><strong>Consensus AI</strong></td><td>AI-powered academic search engine; gives evidence-based answers with citations from peer-reviewed research</td><td><span class="pill pill-teal">Evidence Synthesis</span></td><td><a href="https://consensus.app" target="_blank">consensus.app</a></td></tr>
+      <tr><td><strong>Research Rabbit</strong></td><td>Visualises citation networks; finds connected papers and authors; "like Spotify but for research papers"</td><td><span class="pill pill-purple">Discovery</span></td><td><a href="https://www.researchrabbit.ai" target="_blank">researchrabbit.ai</a> (Free)</td></tr>
+      <tr><td><strong>Rayyan</strong></td><td>AI-assisted systematic review tool; screens abstracts, manages inclusion/exclusion, team collaboration</td><td><span class="pill pill-green">Systematic Reviews</span></td><td><a href="https://www.rayyan.ai" target="_blank">rayyan.ai</a></td></tr>
+      <tr><td><strong>Semantic Scholar</strong></td><td>Free AI-powered academic search; TLDR summaries; citation context; Allen Institute for AI</td><td><span class="pill pill-blue">Literature Search</span></td><td><a href="https://www.semanticscholar.org" target="_blank">semanticscholar.org</a></td></tr>
+      <tr><td><strong>Tempus AI</strong></td><td>Clinical trial matching AI; identifies eligible patients from EHR data in real time</td><td><span class="pill pill-amber">Trial Recruitment</span></td><td><a href="https://www.tempus.com" target="_blank">tempus.com</a></td></tr>
+      <tr><td><strong>IBM Watson for Oncology</strong></td><td>AI that analyses patient tumour genomics and recommends evidence-based treatment options</td><td><span class="pill pill-red">Oncology Research</span></td><td><a href="https://www.ibm.com/watson-health" target="_blank">ibm.com</a></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════ QUALITY IMPROVEMENT ═══════════════════════════════ -->
+<div id="sec-qi" class="section">
+  <div class="hero">
+    <span class="hero-tag">Section 5 — Quality Improvement</span>
+    <h2>AI in Quality Improvement</h2>
+    <p>Real-time monitoring, predictive early warning systems, safety dashboards, and outcome analysis — making care measurably safer and more effective.</p>
+  </div>
+
+  <div class="sarah-box">
+    <div class="sarah-avatar">👩</div>
+    <div class="sarah-content">
+      <h4>Sarah's Story — Quality Improvement in Action</h4>
+      <p>Six hours into Sarah's admission, her observations trend subtly downward. Before any nurse physically reviews them, the ward's <strong>AI early warning system</strong> (EWS) calculates her deterioration risk as "HIGH" — triggering a doctor review 90 minutes earlier than the standard NEWS2 escalation would have. This may prevent her progressing to ICU admission.</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon" style="background:var(--red-light);">🚨</div>
+      <h3>Early Warning &amp; Deterioration Detection</h3>
+      <p>AI continuously analyses vital signs, lab results, and nursing observations to predict clinical deterioration — sepsis, AKI, respiratory failure — before it becomes critical.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Google's DeepMind AKI alert predicted acute kidney injury 48 hours before conventional tests flagged it.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--amber-light);">💊</div>
+      <h3>Medication Safety &amp; Prescribing</h3>
+      <p>AI checks every prescription against allergies, interactions, renal function, and weight-based dosing — flagging dangerous prescribing errors before they reach the patient.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Epic AI alerts prevented 47,000 potential prescribing errors in one NHS Trust over 12 months.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--green-light);">📈</div>
+      <h3>Outcome Monitoring &amp; Dashboards</h3>
+      <p>Real-time dashboards track mortality rates, infection rates, HSMR, and readmissions — automatically benchmarked against national standards and flagging outliers.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 A QI team used Power BI + AI to identify that SSI rates spiked on a specific ward on Thursdays — tracing it to a locum surgeon.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--purple-light);">🔄</div>
+      <h3>Readmission Prevention</h3>
+      <p>AI risk-stratifies patients at discharge — predicting who will be readmitted within 30 days and triggering targeted follow-up for high-risk patients.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 A COPD readmission AI reduced 30-day readmissions by 18% by prioritising community nurse visits to high-risk patients.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--blue-light);">🦠</div>
+      <h3>Infection Prevention &amp; Control</h3>
+      <p>AI tracks infection patterns, identifies outbreak clusters, predicts surgical site infections, and monitors antibiotic stewardship compliance in real time.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 AI predicted a Clostridioides difficile cluster 72 hours before standard IPC surveillance flagged it.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--teal-light);">⚖️</div>
+      <h3>Equity &amp; Patient Safety Monitoring</h3>
+      <p>AI analyses whether different demographic groups receive equitable care — flagging disparities in pain management, length of stay, or treatment access.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 NHS Race Equality Standard: AI identified Black patients waited 40% longer for pain relief — prompting a Trust-wide protocol review.</p>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">AI Early Warning System Impact on Sepsis Outcomes</div>
+    <div class="chart-desc">Comparison of key performance indicators before and after AI-powered sepsis detection deployment (12-month NHS pilot data)</div>
+    <div class="chart-wrap"><canvas id="qiChart" role="img" aria-label="Bar chart showing sepsis-related improvements after AI deployment">Data shown in chart</canvas></div>
+  </div>
+
+  <h3 class="section-title" style="font-size:1.2rem;margin-bottom:4px;margin-top:24px;">Key QI Tools &amp; Platforms</h3>
+  <table class="tools-table">
+    <thead><tr><th>Tool</th><th>Function</th><th>Category</th><th>NHS Use</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Epic Sepsis Model</strong></td><td>ML model embedded in Epic EHR; predicts sepsis 12 hours before clinical recognition using continuous vital sign analysis</td><td><span class="pill pill-red">Early Warning</span></td><td>UCLH, Barts, North Tees</td></tr>
+      <tr><td><strong>Google DeepMind AKI</strong></td><td>Predicts acute kidney injury 48hr in advance; trained on 700,000 patient records; NHS partnership</td><td><span class="pill pill-red">Deterioration</span></td><td>Moorfields, UCLH pilot</td></tr>
+      <tr><td><strong>Palantir Foundry (NHS FDP)</strong></td><td>National AI analytics platform; integrates NHS data for population health, pathway optimisation, quality monitoring</td><td><span class="pill pill-green">Analytics</span></td><td>NHS England national</td></tr>
+      <tr><td><strong>Microsoft Power BI + AI</strong></td><td>Business intelligence with AI insights; builds QI dashboards for HSMR, RTT, infection rates, outcome monitoring</td><td><span class="pill pill-blue">Dashboards</span></td><td>Most NHS Trusts</td></tr>
+      <tr><td><strong>Cerner AI Frameworks</strong></td><td>Deterioration detection, readmission risk, and care gap identification embedded in Cerner EHR</td><td><span class="pill pill-amber">EHR AI</span></td><td>Various NHS Trusts</td></tr>
+      <tr><td><strong>PatientSafe Network</strong></td><td>AI-powered clinical communication and safety checklist platform for ward teams</td><td><span class="pill pill-teal">Safety</span></td><td>Used in UK hospitals</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ethics-card">
+    <h4>⚠️ QI + AI: Key Governance Considerations for NHS</h4>
+    <ul>
+      <li><strong>Alert fatigue:</strong> Too many AI alerts can be ignored. Balance sensitivity with specificity carefully.</li>
+      <li><strong>Validation:</strong> AI tools must be locally validated — a model trained on US patients may not perform the same in an NHS population.</li>
+      <li><strong>MHRA oversight:</strong> AI used for clinical decision support may require UKCA/CE marking as a Medical Device under the UK MDR 2002.</li>
+      <li><strong>Staff engagement:</strong> Clinicians must understand what the AI is doing — black-box tools erode trust and can harm patient safety.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ DIAGNOSTICS ═══════════════════════════════ -->
+<div id="sec-diagnostics" class="section">
+  <div class="hero">
+    <span class="hero-tag">Section 6 — Diagnostics &amp; Clinical AI</span>
+    <h2>AI in Diagnostics &amp; Clinical Care</h2>
+    <p>Medical imaging, ECG interpretation, pathology, point-of-care diagnostics, and AI-powered clinical decision support — the frontline of applied clinical AI.</p>
+  </div>
+
+  <div class="sarah-box">
+    <div class="sarah-avatar">👩</div>
+    <div class="sarah-content">
+      <h4>Sarah's Story — Diagnostics in Action</h4>
+      <p>Sarah's chest X-ray is processed by an <strong>AI radiology tool</strong> that identifies a subtle right lower lobe consolidation — flagged as "possible pneumonia" within 90 seconds of upload, before the radiologist's formal read. Meanwhile, her ECG is simultaneously analysed for AF by an AI algorithm, and her admission bloods are scanned by a CDSS that cross-references her CRP 147, WCC 14.2, and temperature 38.6°C — generating a <strong>CURB-65 score automatically</strong> and suggesting IV co-amoxiclav.</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon" style="background:var(--blue-light);">🫁</div>
+      <h3>Medical Imaging AI</h3>
+      <p>Deep learning models analyse chest X-rays, CT, MRI, and ultrasound with sensitivity comparable to — or exceeding — specialist radiologists for specific tasks.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Aidoc's chest CT AI detects pulmonary embolism with 92% sensitivity vs 72% for standard radiologist workflow.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--red-light);">❤️</div>
+      <h3>ECG &amp; Cardiac AI</h3>
+      <p>AI analyses 12-lead ECGs to detect AF, ST-elevation, heart block, and hypertrophic cardiomyopathy — often identifying patterns invisible to the naked eye.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Mayo Clinic AI ECG detected subclinical LV dysfunction (EF &lt;35%) with 85% accuracy — before symptoms appeared.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--purple-light);">🔬</div>
+      <h3>Pathology &amp; Histology</h3>
+      <p>AI analyses digitised tissue slides to detect cancer cells, grade tumours, and predict prognosis — at the speed of scanning and without reader fatigue.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 PathAI's system detects breast cancer in histology slides with 99.5% sensitivity — reducing pathologist workload by 40%.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--green-light);">👁️</div>
+      <h3>Ophthalmology AI</h3>
+      <p>AI screens retinal photographs for diabetic retinopathy, macular degeneration, and glaucoma — enabling community screening at scale without specialist involvement.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 IDx-DR: First FDA/MHRA-approved autonomous AI diagnostic — screens diabetic retinopathy without a clinician reviewing the result.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--teal-light);">🩺</div>
+      <h3>Clinical Decision Support (CDSS)</h3>
+      <p>AI-powered decision support tools integrated into EHRs calculate risk scores, suggest diagnoses, recommend treatments, and flag contraindications at point of care.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 Rhazes.AI embeds CDSS directly in the clinical workflow — auto-calculating CURB-65, Wells, HEART scores from the patient record.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--amber-light);">🧫</div>
+      <h3>Dermatology &amp; Wound AI</h3>
+      <p>AI analyses smartphone photographs of skin lesions and wounds to classify melanoma, ulcer staging, and wound healing progress — enabling remote community monitoring.</p>
+      <p style="font-size:0.82rem;margin-top:10px;color:var(--teal-dark);">📌 SkinVision AI screens for skin cancer with 95% sensitivity — deployed by several NHS community trusts.</p>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">AI vs Clinician Performance — Diagnostic Accuracy by Task</div>
+    <div class="chart-desc">Sensitivity (%) in published head-to-head studies (AI vs human clinician — AI is not always superior; context matters)</div>
+    <div class="chart-wrap"><canvas id="diagChart" role="img" aria-label="Bar chart comparing AI and clinician diagnostic sensitivity across five clinical tasks">Data shown in chart</canvas></div>
+  </div>
+
+  <h3 class="section-title" style="font-size:1.2rem;margin-bottom:4px;margin-top:24px;">Key Diagnostic AI Tools</h3>
+  <table class="tools-table">
+    <thead><tr><th>Tool</th><th>Clinical Task</th><th>Speciality</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Aidoc</strong></td><td>CT imaging AI; detects PE, ICH, aortic dissection, fractures — real-time radiologist workflow integration</td><td><span class="pill pill-blue">Radiology</span></td><td>FDA cleared; NHS pilots</td></tr>
+      <tr><td><strong>Zebra Medical Vision</strong></td><td>Whole-body CT analysis; detects 10+ conditions simultaneously including osteoporosis, liver disease, aortic aneurysm</td><td><span class="pill pill-blue">Radiology</span></td><td>CE marked; NHSX evaluated</td></tr>
+      <tr><td><strong>IDx-DR (Digital Diagnostics)</strong></td><td>Autonomous diabetic retinopathy screening AI — no ophthalmologist required for the screening decision</td><td><span class="pill pill-green">Ophthalmology</span></td><td>FDA approved; NHS evaluated</td></tr>
+      <tr><td><strong>PathAI</strong></td><td>AI pathology platform; breast cancer detection, tumour grading, biomarker identification in H&amp;E slides</td><td><span class="pill pill-purple">Pathology</span></td><td>USA (Bristol-Myers Squibb partner)</td></tr>
+      <tr><td><strong>Caption AI (GE Healthcare)</strong></td><td>Real-time ultrasound image guidance AI; coaches any clinician to acquire diagnostic-quality echo views</td><td><span class="pill pill-red">Cardiology/Sono</span></td><td>FDA cleared; NHS rollout</td></tr>
+      <tr><td><strong>Rhazes.AI</strong></td><td>CDSS with AI; auto-calculates 50+ clinical risk scores, suggests diagnoses, integrates with patient record</td><td><span class="pill pill-teal">CDSS</span></td><td>UK-based; NHS pilots</td></tr>
+      <tr><td><strong>Tempus One</strong></td><td>AI clinical intelligence platform for oncology; genomics + clinical data for treatment decision support</td><td><span class="pill pill-amber">Oncology</span></td><td>USA; UK expansion</td></tr>
+    </tbody>
+  </table>
+
+  <div class="key-point">
+    <span class="key-icon">⚠️</span>
+    <span><strong>Important Clinical Caveat:</strong> AI outperforms humans on <em>specific, well-defined tasks</em> (e.g. detecting a PE on CT). AI does NOT outperform an experienced clinician's <em>holistic clinical reasoning</em> — integrating symptoms, signs, context, and patient narrative. The goal is <strong>human + AI augmentation</strong>, not replacement.</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ GLOSSARY ═══════════════════════════════ -->
+<div id="sec-glossary" class="section">
+  <div class="hero">
+    <span class="hero-tag">Section 7 — Glossary</span>
+    <h2>AI Buzzwords — Medical Definitions</h2>
+    <p>Click any card to reveal the clinical definition and a real-world medical example. Flip them back to test yourself.</p>
+  </div>
+  <p style="font-size:0.875rem;color:var(--gray-500);margin-bottom:20px;">👆 Click a card to flip it and see the definition + medical example. Click again to flip back.</p>
+  <div class="gloss-grid" id="glossGrid"></div>
+</div>
+
+<!-- ═══════════════════════════════ WORKBOOK ═══════════════════════════════ -->
+<div id="sec-workbook" class="section">
+
+  <!-- SHEETS SETUP PANEL (hidden by default) -->
+  <div id="wbSetupPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#fff;border-radius:16px;max-width:620px;width:100%;max-height:90vh;overflow-y:auto;padding:32px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+          <h3 style="font-family:var(--font-head);font-size:1.2rem;color:var(--navy);margin-bottom:2px;">⚙️ Connect to Google Sheets</h3>
+          <p style="font-size:0.75rem;color:var(--gray-400);letter-spacing:0.04em;text-transform:uppercase;">One-time setup · 3 minutes</p>
+        </div>
+        <button onclick="closeWbSetup()" style="background:none;border:1px solid var(--gray-200);border-radius:8px;width:34px;height:34px;font-size:1rem;cursor:pointer;color:var(--gray-400);">✕</button>
+      </div>
+      <p style="font-size:0.875rem;color:var(--gray-600);margin-bottom:16px;line-height:1.7;">Follow these steps to send all workbook responses directly to a Google Sheet you own.</p>
+
+      <div style="background:var(--gray-50);border-radius:10px;padding:14px 16px;margin-bottom:10px;border-left:4px solid var(--teal);">
+        <p style="font-weight:800;font-size:0.85rem;color:var(--navy);margin-bottom:6px;">Step 1 — Create a Google Sheet</p>
+        <p style="font-size:0.82rem;color:var(--gray-600);line-height:1.6;">Go to <strong>sheets.google.com</strong> → create a blank sheet → name it <strong>"AI Rx Responses"</strong></p>
+      </div>
+
+      <div style="background:var(--gray-50);border-radius:10px;padding:14px 16px;margin-bottom:10px;border-left:4px solid var(--teal);">
+        <p style="font-weight:800;font-size:0.85rem;color:var(--navy);margin-bottom:6px;">Step 2 — Open Apps Script</p>
+        <p style="font-size:0.82rem;color:var(--gray-600);line-height:1.6;">In your sheet click <strong>Extensions → Apps Script</strong> → delete existing code → paste the code below</p>
+        <div style="background:#1E293B;color:#7FFFEE;padding:12px;border-radius:8px;font-family:monospace;font-size:0.72rem;line-height:1.6;overflow-x:auto;margin:8px 0;white-space:pre;">function doPost(e){try{const s=SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();const d=JSON.parse(e.postData.contents);if(s.getLastRow()===0){s.appendRow(Object.keys(d));s.getRange(1,1,1,Object.keys(d).length).setBackground('#0D2B4E').setFontColor('#FFFFFF').setFontWeight('bold');}s.appendRow(Object.values(d));return ContentService.createTextOutput(JSON.stringify({status:'success'})).setMimeType(ContentService.MimeType.JSON);}catch(err){return ContentService.createTextOutput(JSON.stringify({status:'error',message:err.toString()})).setMimeType(ContentService.MimeType.JSON);}}
+function doGet(e){return ContentService.createTextOutput(JSON.stringify({status:'live'})).setMimeType(ContentService.MimeType.JSON);}</div>
+        <button onclick="copyWbCode()" style="background:#1E293B;color:#7FFFEE;border:none;padding:6px 14px;border-radius:6px;font-size:0.78rem;cursor:pointer;">📋 Copy code</button>
+      </div>
+
+      <div style="background:var(--gray-50);border-radius:10px;padding:14px 16px;margin-bottom:10px;border-left:4px solid var(--teal);">
+        <p style="font-weight:800;font-size:0.85rem;color:var(--navy);margin-bottom:6px;">Step 3 — Deploy as Web App</p>
+        <p style="font-size:0.82rem;color:var(--gray-600);line-height:1.6;"><strong>Deploy → New deployment → Web app</strong><br>Set <em>Execute as: Me</em> · <em>Who has access: Anyone</em><br>Click <strong>Deploy</strong> → Authorise → Copy the Web app URL</p>
+      </div>
+
+      <div style="background:var(--gray-50);border-radius:10px;padding:14px 16px;margin-bottom:16px;border-left:4px solid var(--teal);">
+        <p style="font-weight:800;font-size:0.85rem;color:var(--navy);margin-bottom:8px;">Step 4 — Paste your URL here</p>
+        <input type="url" id="wbScriptUrl" placeholder="https://script.google.com/macros/s/YOUR_ID/exec"
+          style="width:100%;border:1.5px solid var(--gray-200);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:0.875rem;color:var(--gray-800);">
+      </div>
+
+      <button onclick="saveWbScriptUrl()" style="background:var(--navy);color:#fff;border:none;padding:12px 24px;border-radius:10px;font-family:var(--font-body);font-size:0.9rem;font-weight:700;cursor:pointer;width:100%;margin-bottom:8px;">✅ Connect & Save</button>
+      <button onclick="closeWbSetup()" style="background:none;border:1px solid var(--gray-200);color:var(--gray-500);padding:10px 24px;border-radius:10px;font-family:var(--font-body);font-size:0.875rem;cursor:pointer;width:100%;">Cancel</button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero" style="margin-bottom:20px;">
+    <span class="hero-tag">Pre-Course Workbook</span>
+    <h2>AI Rx — Pre-Course Workbook</h2>
+    <p>Complete all sections before attending the course. Your responses are submitted directly to the course team's Google Sheet. Takes 15–20 minutes.</p>
+    <div style="display:flex;align-items:center;gap:12px;margin-top:18px;flex-wrap:wrap;">
+      <div id="wbTrackBadge" style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.4);color:#FCD34D;font-size:0.72rem;font-weight:700;padding:4px 12px;border-radius:20px;">
+        <span style="width:7px;height:7px;border-radius:50%;background:#F59E0B;display:inline-block;"></span>
+        <span id="wbTrackLabel">Not connected to Sheets</span>
+      </div>
+      <button onclick="openWbSetup()" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#fff;font-family:var(--font-body);font-size:0.78rem;font-weight:700;padding:5px 14px;border-radius:20px;cursor:pointer;">
+        ⚙️ Connect to Google Sheets
+      </button>
+    </div>
+  </div>
+
+  <!-- PARTICIPANT INFO -->
+  <div class="card" style="margin-bottom:20px;">
+    <h3 style="font-family:var(--font-head);font-size:1.05rem;color:var(--navy);margin-bottom:14px;">👤 About You</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+      <div><label style="font-size:0.78rem;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px;">First Name <span style="color:var(--red);">*</span></label>
+        <input id="wb_firstName" type="text" placeholder="e.g. Sarah" style="width:100%;border:1.5px solid var(--gray-200);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:0.875rem;color:var(--gray-800);"></div>
+      <div><label style="font-size:0.78rem;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px;">Surname</label>
+        <input id="wb_lastName" type="text" placeholder="Optional" style="width:100%;border:1.5px solid var(--gray-200);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:0.875rem;color:var(--gray-800);"></div>
+      <div><label style="font-size:0.78rem;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px;">Role <span style="color:var(--red);">*</span></label>
+        <select id="wb_role" style="width:100%;border:1.5px solid var(--gray-200);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:0.875rem;color:var(--gray-800);background:#fff;">
+          <option value="">Select…</option>
+          <option>Foundation Doctor (F1/F2)</option><option>Core/Specialty Trainee</option>
+          <option>Registrar / SpR</option><option>Consultant</option><option>GP / GP Partner</option>
+          <option>Advanced Nurse Practitioner</option><option>Nurse</option>
+          <option>Allied Health Professional</option><option>Medical Student</option>
+          <option>NHS Manager / Administrator</option><option>Academic / Researcher</option><option>Other</option>
+        </select></div>
+      <div><label style="font-size:0.78rem;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px;">Specialty <span style="color:var(--red);">*</span></label>
+        <input id="wb_specialty" type="text" placeholder="e.g. Emergency Medicine" style="width:100%;border:1.5px solid var(--gray-200);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:0.875rem;color:var(--gray-800);"></div>
+      <div><label style="font-size:0.78rem;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px;">NHS Trust</label>
+        <input id="wb_trust" type="text" placeholder="e.g. Nottingham University Hospitals" style="width:100%;border:1.5px solid var(--gray-200);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:0.875rem;color:var(--gray-800);"></div>
+      <div><label style="font-size:0.78rem;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px;">Years in Practice</label>
+        <select id="wb_years" style="width:100%;border:1.5px solid var(--gray-200);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:0.875rem;color:var(--gray-800);background:#fff;">
+          <option value="">Select…</option><option>Less than 1 year</option><option>1–3 years</option>
+          <option>4–7 years</option><option>8–15 years</option><option>More than 15 years</option>
+        </select></div>
+    </div>
+  </div>
+
+  <!-- SECTION A: SELF-ASSESSMENT -->
+  <div class="wb-section">
+    <h3>Section A — Self-Assessment Checklist</h3>
+    <p>Tick the statements that apply to you right now. Be honest — this is for your own reflection.</p>
+    <div class="card"><div id="selfcheck"></div></div>
+  </div>
+
+  <!-- SECTION B: MATCHING -->
+  <div class="wb-section">
+    <h3>Section B — Match the Term to the Medical Example</h3>
+    <p>Tap a <strong>blue term</strong> then tap its matching <strong>green example</strong> to connect them.</p>
+    <div class="card" id="matchSection"></div>
+  </div>
+
+  <!-- SECTION C: MCQ -->
+  <div class="wb-section">
+    <h3>Section C — Clinical AI Scenarios (MCQ)</h3>
+    <p>Choose the best answer for each scenario.</p>
+    <div id="mcqSection"></div>
+  </div>
+
+  <!-- SECTION D: REFLECTION -->
+  <div class="wb-section">
+    <h3>Section D — Reflection Questions</h3>
+    <p>Write your thoughts below. Bring your answers to the course session.</p>
+    <div id="reflectSection"></div>
+  </div>
+
+  <!-- SECTION E: SARAH CASE -->
+  <div class="wb-section">
+    <h3>Section E — Sarah's Case: Apply Your Learning</h3>
+    <p>Read the clinical scenario and answer the questions below.</p>
+    <div class="card" style="margin-bottom:16px;">
+      <div style="background:var(--gray-50);border-radius:8px;padding:16px;margin-bottom:16px;border-left:4px solid var(--navy);">
+        <p style="font-weight:700;color:var(--navy);margin-bottom:8px;">📋 Clinical Scenario</p>
+        <p style="font-size:0.9rem;color:var(--gray-700);line-height:1.7;">Sarah is a 45-year-old teacher admitted to A&E with a 3-day history of productive cough, fever (38.6°C), and breathlessness. Sp0₂ is 93% on air. CXR shows right lower lobe consolidation. CRP is 147. She has type 2 diabetes and is on metformin. The admitting F2 doctor enters Sarah's details into the hospital EHR — which uses an AI-powered CDSS.</p>
+      </div>
+      <div id="caseSection"></div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="card" style="text-align:center;padding:32px;margin-bottom:8px;">
+    <h3 style="font-family:var(--font-head);font-size:1.15rem;color:var(--navy);margin-bottom:8px;">🎓 Ready to submit your workbook?</h3>
+    <p style="color:var(--gray-500);font-size:0.875rem;margin-bottom:20px;">Your answers will be sent to the course team's Google Sheet. You'll see a score summary once submitted.</p>
+    <div id="wbSubmitErr" style="display:none;background:var(--red-light);color:var(--red);border:1px solid #FCA5A5;border-radius:8px;padding:10px 14px;font-size:0.875rem;margin-bottom:14px;"></div>
+    <button onclick="submitWbForm()" id="wbSubmitBtn" style="background:var(--navy);color:#fff;border:none;padding:14px 36px;border-radius:10px;font-family:var(--font-body);font-size:1rem;font-weight:700;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#007A6B'" onmouseout="this.style.background='var(--navy)'">Submit Workbook →</button>
+    <p style="font-size:0.72rem;color:var(--gray-400);margin-top:12px;">No patient data should be included. For educational use only.</p>
+  </div>
+
+  <!-- SUCCESS SCREEN (hidden) -->
+  <div id="wbSuccess" style="display:none;background:#fff;border-radius:14px;border:1px solid var(--gray-200);padding:40px;text-align:center;margin-bottom:8px;">
+    <div style="width:64px;height:64px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 16px;">🎉</div>
+    <h3 style="font-family:var(--font-head);font-size:1.3rem;color:var(--navy);margin-bottom:8px;">Workbook Submitted!</h3>
+    <p style="color:var(--gray-500);font-size:0.875rem;margin-bottom:20px;max-width:480px;margin-left:auto;margin-right:auto;">Your responses have been recorded. Bring this summary to the course — it will start our group discussion.</p>
+    <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:20px;">
+      <div style="background:var(--gray-50);border-radius:10px;padding:14px 20px;border:1px solid var(--gray-200);">
+        <div id="wbMcqScore" style="font-family:var(--font-head);font-size:1.8rem;font-weight:700;color:var(--teal-dark);">—</div>
+        <div style="font-size:0.75rem;color:var(--gray-500);">MCQ Score</div>
+      </div>
+      <div style="background:var(--gray-50);border-radius:10px;padding:14px 20px;border:1px solid var(--gray-200);">
+        <div id="wbCheckScore" style="font-family:var(--font-head);font-size:1.8rem;font-weight:700;color:var(--navy);">—</div>
+        <div style="font-size:0.75rem;color:var(--gray-500);">Checklist Items</div>
+      </div>
+      <div style="background:var(--gray-50);border-radius:10px;padding:14px 20px;border:1px solid var(--gray-200);">
+        <div id="wbTimeStamp" style="font-family:var(--font-head);font-size:1.8rem;font-weight:700;color:var(--amber);">—</div>
+        <div style="font-size:0.75rem;color:var(--gray-500);">Submitted at</div>
+      </div>
+    </div>
+    <div id="wbSummaryBox" style="background:var(--gray-50);border-radius:10px;padding:18px;text-align:left;font-size:0.875rem;color:var(--gray-600);line-height:1.8;margin-bottom:20px;border:1px solid var(--gray-200);"></div>
+    <button onclick="window.print()" style="background:var(--navy);color:#fff;border:none;padding:11px 24px;border-radius:8px;font-family:var(--font-body);font-size:0.875rem;font-weight:700;cursor:pointer;margin-right:8px;">🖨️ Print Summary</button>
+    <button onclick="resetWbForm()" style="background:#fff;color:var(--gray-500);border:1px solid var(--gray-200);padding:11px 24px;border-radius:8px;font-family:var(--font-body);font-size:0.875rem;font-weight:600;cursor:pointer;">Submit Another Response</button>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════ AI TOOLKIT ═══════════════════════════════ -->
+<div id="sec-toolkit" class="section">
+  <div class="hero">
+    <span class="hero-tag">AI Rx Toolkit · 2026</span>
+    <h2>Your AI Toolkit — Curated for Clinicians</h2>
+    <p>Every tool your clinical team needs, organised by category. Personal recommendations are highlighted. All tools have been selected for relevance to NHS practice and medical education.</p>
+    <div class="hero-meta">
+      <span><span class="dot"></span>Personal picks marked ⭐</span>
+      <span><span class="dot"></span>Free tiers available where noted</span>
+      <span><span class="dot"></span>UK-friendly tools prioritised</span>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;align-items:center;">
+    <span style="font-size:0.82rem;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.05em;">Filter:</span>
+    <button class="inner-tab active" onclick="filterToolkit('all',this)">All Tools</button>
+    <button class="inner-tab" onclick="filterToolkit('chat',this)">AI Chat</button>
+    <button class="inner-tab" onclick="filterToolkit('clinical',this)">Clinical</button>
+    <button class="inner-tab" onclick="filterToolkit('scribe',this)">Scribe</button>
+    <button class="inner-tab" onclick="filterToolkit('research',this)">Research</button>
+    <button class="inner-tab" onclick="filterToolkit('education',this)">Education</button>
+    <button class="inner-tab" onclick="filterToolkit('productivity',this)">Productivity</button>
+    <button class="inner-tab" onclick="filterToolkit('imaging',this)">Imaging & Diagnostics</button>
+    <button class="inner-tab" onclick="filterToolkit('courses',this)">Courses</button>
+    <button class="inner-tab" onclick="filterToolkit('media',this)">Films & Docs</button>
+  </div>
+
+  <div id="toolkit-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;"></div>
+
+  <!-- COURSES TABLE -->
+  <div id="toolkit-courses" style="margin-top:32px;">
+    <h3 class="section-title" style="font-size:1.2rem;margin-bottom:6px;">📖 Recommended Courses & Learning Resources</h3>
+    <p class="section-sub">Free and paid courses to deepen your AI knowledge — from beginner to advanced</p>
+    <table class="tools-table">
+      <thead><tr><th>Course / Resource</th><th>Provider</th><th>Level</th><th>Cost</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr><td><strong>An Introduction to Artificial Intelligence</strong></td><td>OpenLearn — Open University</td><td><span class="pill pill-green">Beginner</span></td><td>Free</td><td><a href="https://www.open.edu/openlearn/science-maths-technology/artificial-intelligence" target="_blank">openlearn.open.ac.uk</a></td></tr>
+        <tr><td><strong>AI in Healthcare: Navigating the Noise ⭐</strong></td><td>NHS Confederation</td><td><span class="pill pill-green">Beginner</span></td><td>Free</td><td><a href="https://www.nhsconfed.org/publications/ai-healthcare-navigating-noise" target="_blank">nhsconfed.org</a></td></tr>
+        <tr><td><strong>Introduction to AI in Healthcare</strong></td><td>King's Health Partners</td><td><span class="pill pill-green">Beginner</span></td><td>Free</td><td><a href="https://learninghub.kingshealthpartners.org/course/aimedicine" target="_blank">learninghub.kingshealthpartners.org</a></td></tr>
+        <tr><td><strong>NHS AI Dictionary</strong></td><td>NHSX</td><td><span class="pill pill-green">Reference</span></td><td>Free</td><td><a href="https://nhsx.github.io/ai-dictionary" target="_blank">nhsx.github.io/ai-dictionary</a></td></tr>
+        <tr><td><strong>AI in Healthcare Specialisation</strong></td><td>Stanford / Coursera</td><td><span class="pill pill-amber">Intermediate</span></td><td>Paid</td><td><a href="https://www.coursera.org/specializations/ai-healthcare" target="_blank">coursera.org</a></td></tr>
+        <tr><td><strong>Google AI Essentials</strong></td><td>Google / Coursera</td><td><span class="pill pill-green">Beginner</span></td><td>Paid</td><td><a href="https://www.coursera.org/learn/google-ai-essentials" target="_blank">coursera.org</a></td></tr>
+        <tr><td><strong>Elements of AI</strong></td><td>University of Helsinki</td><td><span class="pill pill-green">Beginner</span></td><td>Free</td><td><a href="https://www.elementsofai.com" target="_blank">elementsofai.com</a></td></tr>
+        <tr><td><strong>Machine Learning for Healthcare</strong></td><td>MIT OpenCourseWare</td><td><span class="pill pill-red">Advanced</span></td><td>Free</td><td><a href="https://ocw.mit.edu" target="_blank">ocw.mit.edu</a></td></tr>
+        <tr><td><strong>Find More AI Tools</strong></td><td>There's An AI For That</td><td><span class="pill pill-blue">Directory</span></td><td>Free</td><td><a href="https://theresanaiforthat.com" target="_blank">theresanaiforthat.com</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FILMS TABLE -->
+  <div id="toolkit-films" style="margin-top:32px;">
+    <h3 class="section-title" style="font-size:1.2rem;margin-bottom:6px;">🎬 Films & Documentaries on AI</h3>
+    <p class="section-sub">Recommended watching to understand AI's societal, ethical, and philosophical dimensions</p>
+    <table class="tools-table">
+      <thead><tr><th>Title</th><th>Type</th><th>Rating</th><th>Key Lesson for Clinicians</th><th>AI Tone</th></tr></thead>
+      <tbody>
+        <tr><td><strong>AlphaGo (2017) ⭐</strong></td><td>Documentary</td><td>RT 100%</td><td>Shows AI surpassing human expertise in a complex domain — mirrors AI in radiology/diagnostics</td><td><span class="pill pill-green">Positive / Mixed</span></td></tr>
+        <tr><td><strong>Coded Bias (2020) ⭐</strong></td><td>Documentary</td><td>RT 100%</td><td>Facial recognition bias against dark skin — directly relevant to diagnostic AI equity in NHS</td><td><span class="pill pill-red">Cautionary</span></td></tr>
+        <tr><td><strong>The Social Dilemma (2020)</strong></td><td>Documentary</td><td>RT 87%</td><td>Algorithm-driven manipulation — raises questions about AI in patient behaviour and social media health misinformation</td><td><span class="pill pill-red">Cautionary</span></td></tr>
+        <tr><td><strong>Ex Machina (2014)</strong></td><td>Film</td><td>RT 92%</td><td>Consciousness, manipulation, AI autonomy — stimulates ethical discussions</td><td><span class="pill pill-amber">Mixed</span></td></tr>
+        <tr><td><strong>Her (2013)</strong></td><td>Film</td><td>RT 95%</td><td>Human-AI relationship and emotion — raises questions on AI in patient mental health support</td><td><span class="pill pill-amber">Mixed</span></td></tr>
+        <tr><td><strong>2001: A Space Odyssey (1968)</strong></td><td>Film</td><td>RT 90%</td><td>HAL 9000 — a cautionary tale about AI systems we don't fully understand or control</td><td><span class="pill pill-amber">Cautionary</span></td></tr>
+        <tr><td><strong>The Terminator (1984)</strong></td><td>Film</td><td>RT 100%</td><td>Uncontrolled autonomous AI — sparks conversation about AI governance and oversight</td><td><span class="pill pill-red">Negative</span></td></tr>
+        <tr><td><strong>Unknown: Killer Robots (2023)</strong></td><td>Documentary</td><td>RT 100%</td><td>Autonomous weapons AI — regulation, ethics, and unintended consequences</td><td><span class="pill pill-red">Cautionary</span></td></tr>
+        <tr><td><strong>The Age of A.I. (Series)</strong></td><td>Documentary Series</td><td>IMDb 7.8</td><td>Hosted by Robert Downey Jr. — accessible overview of how AI is transforming healthcare and society</td><td><span class="pill pill-green">Positive</span></td></tr>
+        <tr><td><strong>WALL-E (2008)</strong></td><td>Film</td><td>IMDb 8.4</td><td>AI and environmental stewardship — good for discussing AI's role in public health futures</td><td><span class="pill pill-green">Positive / Mixed</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- YOUTUBE SECTION -->
+  <div style="margin-top:32px;">
+    <h3 class="section-title" style="font-size:1.2rem;margin-bottom:6px;">▶️ Quick-Start YouTube Videos</h3>
+    <p class="section-sub">Share these with colleagues or patients who are new to AI</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+      <div class="card"><div style="font-size:1.5rem;margin-bottom:8px;">▶️</div><h3>What is AI? In 5 Minutes</h3><p style="font-size:0.85rem;color:var(--gray-600);">Simplilearn — A concise overview of AI types and applications. Perfect to share with patients or non-technical colleagues.</p></div>
+      <div class="card"><div style="font-size:1.5rem;margin-bottom:8px;">▶️</div><h3>AI Full Beginner Course</h3><p style="font-size:0.85rem;color:var(--gray-600);">Simplilearn — Deeper dive into AI, ML, and deep learning. Good for clinicians wanting to build a solid foundation.</p></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════ WORKBOOK GOOGLE SHEETS SETUP ══════════
+function openWbSetup(){
+  const saved = localStorage.getItem('aiRxPlaybookUrl');
+  if(saved && saved !== 'skip') document.getElementById('wbScriptUrl').value = saved;
+  document.getElementById('wbSetupPanel').style.display='flex';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeWbSetup(){
+  document.getElementById('wbSetupPanel').style.display='none';
+}
+function saveWbScriptUrl(){
+  const url = document.getElementById('wbScriptUrl').value.trim();
+  if(!url || !url.startsWith('https://script.google.com')){
+    alert('Please enter a valid Google Apps Script URL (must start with https://script.google.com)');
+    return;
+  }
+  localStorage.setItem('aiRxPlaybookUrl', url);
+  closeWbSetup();
+  updateWbBadge(true);
+}
+function updateWbBadge(connected){
+  const badge = document.getElementById('wbTrackBadge');
+  const label = document.getElementById('wbTrackLabel');
+  if(!badge) return;
+  if(connected){
+    badge.style.background='rgba(16,185,129,0.2)';
+    badge.style.borderColor='rgba(16,185,129,0.4)';
+    badge.style.color='#6EE7B7';
+    badge.querySelector('span').style.background='#10B981';
+    label.textContent='Tracking active — connected to Sheets';
+  } else {
+    badge.style.background='rgba(245,158,11,0.2)';
+    badge.style.borderColor='rgba(245,158,11,0.4)';
+    badge.style.color='#FCD34D';
+    label.textContent='Not connected to Sheets';
+  }
+}
+function copyWbCode(){
+  const code = document.querySelector('#wbSetupPanel div[style*="1E293B"]').textContent;
+  navigator.clipboard.writeText(code).then(()=>alert('Code copied!')).catch(()=>alert('Please copy the code manually'));
+}
+
+// ══════════ WORKBOOK SUBMISSION ══════════
+async function submitWbForm(){
+  const btn = document.getElementById('wbSubmitBtn');
+  const err = document.getElementById('wbSubmitErr');
+  err.style.display='none';
+
+  // Validate required fields
+  const firstName = document.getElementById('wb_firstName').value.trim();
+  const role = document.getElementById('wb_role').value;
+  const specialty = document.getElementById('wb_specialty').value.trim();
+  if(!firstName || !role || !specialty){
+    err.style.display='block';
+    err.textContent='Please complete the required fields: First Name, Clinical Role, and Specialty before submitting.';
+    document.getElementById('wb_firstName').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+
+  btn.disabled=true;
+  btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:8px;"></span>Submitting…';
+
+  const now = new Date();
+  const payload = {
+    submitted_at: now.toISOString(),
+    submitted_date: now.toLocaleDateString('en-GB'),
+    submitted_time: now.toLocaleTimeString('en-GB'),
+    first_name: firstName,
+    last_name: document.getElementById('wb_lastName').value.trim() || '(anonymous)',
+    role: role,
+    specialty: specialty,
+    trust: document.getElementById('wb_trust').value.trim() || 'Not specified',
+    years_experience: document.getElementById('wb_years').value || 'Not specified',
+    source: 'AI Rx Playbook (airxplaybook.netlify.app)'
+  };
+
+  // Collect checklist
+  let checkCount=0;
+  selfCheckItems.forEach((item,i)=>{
+    const checked = document.getElementById('ck'+i)?.checked;
+    payload[`check_${i+1}`] = checked ? 'Yes' : 'No';
+    if(checked) checkCount++;
+  });
+  payload.checklist_score = `${checkCount}/${selfCheckItems.length}`;
+
+  // Collect MCQ answers
+  let mcqCorrect=0;
+  mcqs.forEach((q,qi)=>{
+    const sel = document.querySelector(`input[name="mcqQ${qi}"]:checked`);
+    const ans = sel ? parseInt(sel.value) : -1;
+    if(ans===q.correct) mcqCorrect++;
+    payload[`mcq_${qi+1}_answer`] = sel ? q.opts[ans] : 'Not answered';
+    payload[`mcq_${qi+1}_correct`] = ans===q.correct ? 'Yes' : (ans===-1 ? 'Not answered' : 'No');
+  });
+  payload.mcq_score = `${mcqCorrect}/${mcqs.length}`;
+
+  // Collect matching answers
+  matchTerms.forEach((t,i)=>{
+    const paired = matchPairs[i] || 'Not answered';
+    payload[`match_${i+1}_term`] = t.term;
+    payload[`match_${i+1}_answer`] = paired;
+    payload[`match_${i+1}_correct`] = paired===t.example ? 'Yes' : (paired==='Not answered' ? 'Not answered' : 'No');
+  });
+
+  // Collect reflections
+  reflections.forEach((r,i)=>{
+    const el = document.querySelector(`#reflectSection textarea:nth-of-type(${i+1})`);
+    payload[`reflection_${i+1}`] = el ? (el.value.trim() || '(blank)') : '(blank)';
+  });
+
+  // Collect case MCQs
+  let caseCorrect=0;
+  caseMcqs.forEach((q,qi)=>{
+    const sel = document.querySelector(`input[name="caseQ${qi}"]:checked`);
+    const ans = sel ? parseInt(sel.value) : -1;
+    if(ans===q.correct) caseCorrect++;
+    payload[`case_${qi+1}_answer`] = sel ? q.opts[ans] : 'Not answered';
+    payload[`case_${qi+1}_correct`] = ans===q.correct ? 'Yes' : (ans===-1 ? 'Not answered' : 'No');
+  });
+  payload.case_score = `${caseCorrect}/${caseMcqs.length}`;
+
+  // Submit to Google Sheets
+  const scriptUrl = localStorage.getItem('aiRxPlaybookUrl');
+  let submitted = false;
+  if(scriptUrl && scriptUrl !== 'skip'){
+    try {
+      await fetch(scriptUrl, {
+        method:'POST', body: JSON.stringify(payload),
+        headers:{'Content-Type':'application/json'}, mode:'no-cors'
+      });
+      submitted = true;
+    } catch(e){ console.warn('Sheets submission failed:', e); }
+  }
+
+  // Show success
+  document.getElementById('wbSuccess').style.display='block';
+  document.getElementById('wbMcqScore').textContent = `${mcqCorrect+caseCorrect}/${mcqs.length+caseMcqs.length}`;
+  document.getElementById('wbCheckScore').textContent = `${checkCount}/${selfCheckItems.length}`;
+  document.getElementById('wbTimeStamp').textContent = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('wbSummaryBox').innerHTML = `
+    <strong style="color:var(--navy);display:block;margin-bottom:8px;">📋 Your Submission Summary</strong>
+    <strong>Name:</strong> ${payload.first_name} ${payload.last_name !== '(anonymous)' ? payload.last_name : ''}<br>
+    <strong>Role:</strong> ${payload.role} — ${payload.specialty}<br>
+    <strong>Trust:</strong> ${payload.trust}<br>
+    <strong>MCQ Score:</strong> ${payload.mcq_score} + Case score: ${payload.case_score}<br>
+    <strong>Checklist:</strong> ${payload.checklist_score} items ticked<br>
+    <strong>Submitted:</strong> ${payload.submitted_date} at ${payload.submitted_time}<br>
+    <span style="color:${submitted?'#059669':'#D97706'};">${submitted?'✅ Recorded in Google Sheets':'⚠️ Not connected to Sheets — click ⚙️ Connect to Google Sheets in the hero above'}</span>
+  `;
+  document.getElementById('wbSuccess').scrollIntoView({behavior:'smooth',block:'start'});
+  btn.disabled=false;
+  btn.textContent='Submit Workbook →';
+}
+
+function resetWbForm(){
+  document.getElementById('wbSuccess').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Init workbook tracking badge on load
+(function(){
+  const saved = localStorage.getItem('aiRxPlaybookUrl');
+  if(saved && saved !== 'skip'){
+    // Badge updated when workbook section is shown
+    document.addEventListener('DOMContentLoaded',()=>updateWbBadge(true));
+  }
+})();
+
+const toolkitData = [
+  // AI CHAT
+  {cat:'chat', name:'ChatGPT ⭐', org:'OpenAI', desc:'The most widely used LLM. Exceptional for writing, clinical Q&A, drafting letters, creating teaching materials, and general problem solving.', url:'https://chat.openai.com', badge:'pill-blue', badgeLabel:'AI Chat', tip:'Like Emergency Medicine — great for almost everything', free:true},
+  {cat:'chat', name:'Perplexity AI ⭐', org:'Perplexity', desc:'AI-powered answer engine that cites sources. Excellent for medical research questions, drug queries, and staying updated with evidence. My go-to alongside Comet Browser.', url:'https://www.perplexity.ai', badge:'pill-teal', badgeLabel:'AI Chat + Search', tip:'My go-to for most tasks', free:true},
+  {cat:'chat', name:'Claude', org:'Anthropic', desc:'Thoughtful, nuanced AI assistant. Excellent for long clinical documents, ethical reasoning, and summarising complex guidelines without hallucinating.', url:'https://claude.ai', badge:'pill-blue', badgeLabel:'AI Chat', tip:'Best for long, complex documents', free:true},
+  {cat:'chat', name:'DeepSeek', org:'DeepSeek AI', desc:'Open-source Chinese LLM with strong reasoning. As capable as ChatGPT for many tasks but cheaper for API access. Like BYD — serious competition.', url:'https://chat.deepseek.com', badge:'pill-blue', badgeLabel:'AI Chat', tip:'As good as ChatGPT — cheaper', free:true},
+  {cat:'chat', name:'Microsoft Copilot', org:'Microsoft', desc:'AI assistant integrated into Microsoft 365 (Word, Outlook, Teams, PowerPoint). Excellent for NHS staff already using Office — drafts letters, summarises meetings, creates slides.', url:'https://copilot.microsoft.com', badge:'pill-blue', badgeLabel:'AI Chat', tip:'Best for Microsoft 365 users', free:true},
+  {cat:'chat', name:'Gemini', org:'Google', desc:'Google\'s flagship LLM. Tightly integrated with Google Workspace (Docs, Gmail, Slides). Good for research synthesis and long-context document analysis.', url:'https://gemini.google.com', badge:'pill-blue', badgeLabel:'AI Chat', free:true},
+  {cat:'chat', name:'Grok', org:'xAI (Musk)', desc:'Real-time AI with access to X (Twitter). Useful for tracking live medical news and debates. Note: owned by Elon Musk — consider data privacy implications.', url:'https://x.ai', badge:'pill-amber', badgeLabel:'AI Chat', tip:'Owned by Musk — use with caution', free:true},
+
+  // CLINICAL
+  {cat:'clinical', name:'Rhazes.AI ⭐', org:'Rhazes', desc:'AI clinical scribe and decision support system built BY clinicians FOR clinicians. Auto-transcribes consultations, calculates risk scores (CURB-65, NEWS2, HEART), and supports differential diagnosis.', url:'https://rhazes.ai', badge:'pill-teal', badgeLabel:'CDSS + Scribe', tip:'My favourite — made by clinicians', free:false},
+  {cat:'clinical', name:'Glass.health', org:'Glass Health', desc:'AI clinical decision support tool. Generates differential diagnoses, assessment & plan, and clinical reasoning — like a brilliant medical registrar always available.', url:'https://glass.health', badge:'pill-teal', badgeLabel:'CDSS', free:true},
+  {cat:'clinical', name:'VisualDx', org:'VisualDx', desc:'Vast clinical image library with AI diagnostic support. Excellent for dermatology, rare conditions, and when a visual clinical clue is key.', url:'https://www.visualdx.com', badge:'pill-purple', badgeLabel:'Diagnostic AI', free:false},
+  {cat:'clinical', name:'PMcardio', org:'Powerful Medical', desc:'AI ECG interpretation tool. Analyses 12-lead ECGs and provides structured clinical reports. Useful for non-cardiologists and in resource-limited settings.', url:'https://www.powerfulmedical.com/pmcardio-individuals', badge:'pill-red', badgeLabel:'Cardiology AI', free:true},
+  {cat:'clinical', name:'Isabel DDx', org:'Isabel Healthcare', desc:'Clinical decision support for differential diagnosis. Clinicians input symptoms and findings; AI generates ranked differentials with evidence. Used in several NHS Trusts.', url:'https://www.isabelhealthcare.com', badge:'pill-teal', badgeLabel:'CDSS', free:false},
+  {cat:'clinical', name:'Pepid', org:'Pepid', desc:'Point-of-care clinical reference tool with AI-assisted drug dosing, interactions, and disease management protocols — particularly strong for emergency medicine.', url:'https://www.pepid.com', badge:'pill-teal', badgeLabel:'Clinical Reference', free:false},
+
+  // SCRIBE
+  {cat:'scribe', name:'Rhazes.AI ⭐', org:'Rhazes', desc:'AI transcription and clinical documentation tool. Listens to consultations and creates structured notes automatically. Built by clinicians — understands medical language natively.', url:'https://rhazes.ai', badge:'pill-teal', badgeLabel:'Scribe', tip:'My favourite', free:false},
+  {cat:'scribe', name:'Freed ⭐', org:'Freed AI', desc:'Medical AI scribe that listens, transcribes, and writes clinical notes. Simple to set up, high accuracy for medical terminology, SOAP note format.', url:'https://freed.ai', badge:'pill-teal', badgeLabel:'Scribe', free:true},
+  {cat:'scribe', name:'Heidi Health', org:'Heidi', desc:'Excellent AI medical scribe, particularly popular in UK primary care. Produces structured notes, referrals, and letters directly from consultation audio.', url:'https://www.heidihealth.com', badge:'pill-teal', badgeLabel:'Scribe', tip:'Excellent for UK Clinicians', free:true},
+  {cat:'scribe', name:'Nuance DAX Copilot', org:'Microsoft / Nuance', desc:'Enterprise ambient AI documentation. Used in multiple NHS Trusts. Integrates with Epic and other EHRs. Reduces documentation time by up to 70%.', url:'https://www.nuance.com/healthcare/dragon-medical-solutions/dax-copilot.html', badge:'pill-amber', badgeLabel:'Scribe', free:false},
+  {cat:'scribe', name:'Wispr Flow', org:'Wispr', desc:'AI voice dictation tool that works across any application — browser, EHR, Word. Converts speech to polished text. Particularly useful for clinicians with dyslexia or heavy typing demands.', url:'https://www.wispr.ai', badge:'pill-purple', badgeLabel:'Dictation', free:false},
+  {cat:'scribe', name:'Suki AI', org:'Suki', desc:'Voice-activated AI clinical assistant. Integrates with major EHRs for voice-driven documentation, order entry, and note creation.', url:'https://www.suki.ai', badge:'pill-teal', badgeLabel:'Scribe', free:false},
+
+  // RESEARCH
+  {cat:'research', name:'Elicit ⭐', org:'Ought', desc:'AI research assistant. Searches PubMed and extracts data from papers automatically. Paste a research question and get a structured evidence summary with citations.', url:'https://elicit.com', badge:'pill-blue', badgeLabel:'Literature Review', free:true},
+  {cat:'research', name:'Consensus AI', org:'Consensus', desc:'AI-powered evidence search engine. Ask a clinical question and get synthesised answers from peer-reviewed research, with percentage agreement across studies.', url:'https://consensus.app', badge:'pill-blue', badgeLabel:'Evidence Synthesis', free:true},
+  {cat:'research', name:'Research Rabbit', org:'Research Rabbit', desc:'Visualises citation networks. Find connected papers, discover key authors, and map a research field visually. Like Spotify for academic papers — free.', url:'https://www.researchrabbit.ai', badge:'pill-purple', badgeLabel:'Discovery', tip:'Spotify for research papers', free:true},
+  {cat:'research', name:'Perplexity AI ⭐', org:'Perplexity', desc:'Best for quick clinical evidence questions with sourced citations. Ask "What is the evidence for X in Y?" and get a cited, up-to-date answer.', url:'https://www.perplexity.ai', badge:'pill-teal', badgeLabel:'Research', free:true},
+  {cat:'research', name:'Rayyan', org:'Qatar Computing Research Institute', desc:'AI-assisted systematic review tool. Screen thousands of abstracts, manage inclusion/exclusion criteria, collaborate with co-reviewers — used by Cochrane researchers.', url:'https://www.rayyan.ai', badge:'pill-green', badgeLabel:'Systematic Reviews', free:true},
+  {cat:'research', name:'Semantic Scholar', org:'Allen Institute for AI', desc:'Free AI academic search engine. TLDR summaries, citation context, and semantic search across 200M+ papers. Excellent for medical literature.', url:'https://www.semanticscholar.org', badge:'pill-blue', badgeLabel:'Literature Search', free:true},
+  {cat:'research', name:'STORM (Stanford)', org:'Stanford University', desc:'AI tool that researches a topic and generates a comprehensive, Wikipedia-style report with citations automatically. Good for creating teaching background documents.', url:'https://storm.genie.stanford.edu', badge:'pill-amber', badgeLabel:'Research Reports', free:true},
+  {cat:'research', name:'Connected Papers', org:'Connected Papers', desc:'Visual tool to explore academic papers. Enter one key paper and see its citation network — great for finding seminal works in a new clinical area.', url:'https://www.connectedpapers.com', badge:'pill-purple', badgeLabel:'Discovery', free:true},
+
+  // EDUCATION
+  {cat:'education', name:'NotebookLM ⭐', org:'Google', desc:'Upload your own clinical guidelines, papers, or lecture notes — AI creates summaries, generates Q&A, produces podcasts, and answers questions based ONLY on your material.', url:'https://notebooklm.google.com', badge:'pill-teal', badgeLabel:'Education', free:true},
+  {cat:'education', name:'AMBOSS', org:'AMBOSS GmbH', desc:'AI-powered qbank with 60,000+ clinical questions. Adaptive learning identifies knowledge gaps. Links to Amboss library for evidence while answering questions. Used by UK postgrads.', url:'https://www.amboss.com', badge:'pill-blue', badgeLabel:'Medical Education', free:false},
+  {cat:'education', name:'Osmosis', org:'Elsevier', desc:'Video-based adaptive learning with AI spaced repetition. Visual, engaging content for medical students and foundation doctors.', url:'https://www.osmosis.org', badge:'pill-blue', badgeLabel:'Medical Education', free:false},
+  {cat:'education', name:'Gamma ⭐', org:'Gamma App', desc:'AI presentation builder. Describe your topic and Gamma creates a polished presentation in seconds. Perfect for teaching sessions, grand rounds, and conference talks.', url:'https://gamma.app', badge:'pill-purple', badgeLabel:'Presentations', tip:'Great for flash presentations', free:true},
+  {cat:'education', name:'Aquifer', org:'Aquifer Education', desc:'Virtual patient cases with AI feedback. Medical students and trainees practise clinical reasoning on realistic patient simulations.', url:'https://www.aquifer.education', badge:'pill-blue', badgeLabel:'Simulation', free:false},
+  {cat:'education', name:'Glasp', org:'Glasp', desc:'AI reading assistant. Highlights and summarises web articles, research papers, and PDFs. Builds a personal knowledge base from your reading.', url:'https://glasp.co', badge:'pill-teal', badgeLabel:'Reading AI', free:true},
+  {cat:'education', name:'Canva AI', org:'Canva', desc:'AI-powered design tool. Creates teaching posters, patient information leaflets, infographics, and presentation slides from prompts. No design skills needed.', url:'https://www.canva.com', badge:'pill-purple', badgeLabel:'Design + Education', free:true},
+
+  // PRODUCTIVITY
+  {cat:'productivity', name:'Xtiles ⭐', org:'Xtiles', desc:'Visual workspace for organising thoughts, projects, and plans. Excellent for ADHD-friendly task management. Great for CPD planning, research organisation, and teaching prep.', url:'https://www.xtiles.app', badge:'pill-amber', badgeLabel:'Organisation', tip:'Excellent for ADHD-friendly planning', free:true},
+  {cat:'productivity', name:'Notion AI', org:'Notion', desc:'All-in-one workspace with AI features. Write, plan, collaborate, and organise clinical projects. AI drafts documents, summarises notes, and generates action items.', url:'https://www.notion.so', badge:'pill-amber', badgeLabel:'Productivity', free:true},
+  {cat:'productivity', name:'Accurx', org:'Accurx', desc:'NHS-integrated patient communication platform. Send AI-assisted messages, triage, eConsult, and referrals. Used by 98% of English GP practices.', url:'https://www.accurx.com', badge:'pill-green', badgeLabel:'NHS Communication', free:false},
+  {cat:'productivity', name:'Microsoft Teams + Copilot', org:'Microsoft', desc:'Teams with AI Copilot transcribes meetings, generates action plans, summarises discussions, and drafts follow-up emails — NHS-wide Microsoft contract.', url:'https://www.microsoft.com/en-gb/microsoft-teams', badge:'pill-blue', badgeLabel:'Meetings', free:false},
+  {cat:'productivity', name:'Gamma', org:'Gamma App', desc:'AI presentation creator. Prompt → polished slide deck in seconds. Used for grand rounds, teaching sessions, and conference talks.', url:'https://gamma.app', badge:'pill-purple', badgeLabel:'Presentations', free:true},
+  {cat:'productivity', name:'Otter.ai', org:'Otter', desc:'AI meeting transcription. Records and transcribes MDT meetings, ward rounds, educational sessions, and committee meetings with AI-generated summaries.', url:'https://otter.ai', badge:'pill-teal', badgeLabel:'Transcription', free:true},
+
+  // IMAGING
+  {cat:'imaging', name:'Aidoc', org:'Aidoc Medical', desc:'Radiology AI platform. Real-time analysis of CT scans for PE, ICH, aortic dissection, and fractures. Integrates with PACS and EHR. Used in NHS radiology pilots.', url:'https://www.aidoc.com', badge:'pill-blue', badgeLabel:'Radiology AI', free:false},
+  {cat:'imaging', name:'SmartAlpha', org:'SmartAlpha', desc:'AI for ultrasound imaging. Anatomy-aware guidance system for clinicians performing ultrasound — improves image acquisition and diagnostic accuracy for non-specialists.', url:'https://smartalpha.ai/artificial-intelligence-in-ultrasound-imaging', badge:'pill-blue', badgeLabel:'Ultrasound AI', free:false},
+  {cat:'imaging', name:'Zebra Medical Vision', org:'Zebra Medical', desc:'AI analyses whole-body CT scans simultaneously for 10+ conditions: osteoporosis, liver disease, aortic aneurysm. Opportunistic screening from existing imaging.', url:'https://www.zebra-med.com', badge:'pill-blue', badgeLabel:'Radiology AI', free:false},
+  {cat:'imaging', name:'IDx-DR', org:'Digital Diagnostics', desc:'First autonomous AI diagnostic approved by the FDA. Screens for diabetic retinopathy without requiring an ophthalmologist to review — enabling community-based screening.', url:'https://www.digitaldiagnostics.com', badge:'pill-green', badgeLabel:'Ophthalmology AI', free:false},
+  {cat:'imaging', name:'PathAI', org:'PathAI', desc:'AI pathology platform. Analyses histology slides for breast cancer, tumour grading, and biomarker identification with near-pathologist accuracy.', url:'https://www.pathai.com', badge:'pill-purple', badgeLabel:'Pathology AI', free:false},
+  {cat:'imaging', name:'Caption AI (GE)', org:'GE Healthcare', desc:'Real-time AI guidance for point-of-care ultrasound. Coaches any clinician to acquire diagnostic-quality echocardiography views — even with minimal training.', url:'https://www.gehealthcare.com/products/ultrasound/vscan-air', badge:'pill-red', badgeLabel:'POCUS AI', free:false},
+];
+
+function filterToolkit(cat, btn){
+  document.querySelectorAll('.inner-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderToolkit(cat);
+  const showCourses = (cat==='all'||cat==='courses');
+  const showFilms = (cat==='all'||cat==='media');
+  document.getElementById('toolkit-courses').style.display = showCourses ? 'block' : 'none';
+  document.getElementById('toolkit-films').style.display = showFilms ? 'block' : 'none';
+}
+
+function renderToolkit(cat){
+  const grid = document.getElementById('toolkit-grid');
+  const filtered = cat==='all' ? toolkitData : toolkitData.filter(t=>t.cat===cat);
+  if(filtered.length===0){grid.innerHTML='<p style="color:var(--gray-500);font-size:0.9rem;grid-column:1/-1;">No tools in this category shown as cards — see the tables above.</p>';return;}
+  grid.innerHTML = filtered.map(t=>`
+    <div style="background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);padding:20px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px;transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 6px 24px rgba(13,43,78,0.14)'" onmouseout="this.style.boxShadow='var(--shadow-sm)'">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+        <div>
+          <div style="font-weight:800;font-size:0.95rem;color:var(--navy);">${t.name}</div>
+          <div style="font-size:0.75rem;color:var(--gray-400);margin-top:1px;">${t.org}</div>
+        </div>
+        <span class="pill ${t.badge}" style="white-space:nowrap;flex-shrink:0;">${t.badgeLabel}</span>
+      </div>
+      <p style="font-size:0.84rem;color:var(--gray-600);line-height:1.6;flex:1;">${t.desc}</p>
+      ${t.tip ? `<div style="font-size:0.79rem;background:var(--teal-light);color:var(--teal-dark);padding:6px 10px;border-radius:6px;font-style:italic;">💬 ${t.tip}</div>` : ''}
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
+        <span style="font-size:0.75rem;color:var(--gray-400);">${t.free ? '✅ Free tier available' : '💳 Paid / Enterprise'}</span>
+        <a href="${t.url}" target="_blank" style="font-size:0.8rem;font-weight:700;color:var(--teal-dark);background:var(--teal-light);padding:5px 12px;border-radius:6px;text-decoration:none;">Visit →</a>
+      </div>
+    </div>`).join('');
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  if(document.getElementById('toolkit-grid')) renderToolkit('all');
+});
+</script>
+
+
+<footer class="playbook-footer">
+  <p>AI Rx Clinical Playbook &amp; Workbook · Designed for the AI Rx Nottingham Programme · 2026</p>
+  <p style="margin-top:4px;">Content is for educational purposes. Always apply clinical judgement. AI assists — it does not replace — professional responsibility.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ── TAB NAVIGATION ──
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='glossary' && !window.glossBuilt){ buildGlossary(); window.glossBuilt=true; }
+  if(id==='workbook' && !window.wbBuilt){ buildWorkbook(); window.wbBuilt=true; }
+  if(id==='workbook'){ const s=localStorage.getItem('aiRxPlaybookUrl'); updateWbBadge(s&&s!=='skip'); }
+  if(id==='toolkit' && !window.tkBuilt){ renderToolkit('all'); window.tkBuilt=true; }
+}
+
+// ── CHARTS ──
+Chart.defaults.font.family = "'Nunito', sans-serif";
+Chart.defaults.font.size = 13;
+Chart.defaults.color = '#475569';
+
+// Adoption chart
+new Chart(document.getElementById('adoptionChart'),{
+  type:'line',
+  data:{
+    labels:['2018','2019','2020','2021','2022','2023','2024','2025','2026(P)'],
+    datasets:[{
+      label:'NHS Trusts with AI tools (%)',
+      data:[12,18,22,31,44,58,71,79,86],
+      borderColor:'#00A693',borderWidth:2.5,pointBackgroundColor:'#00A693',
+      backgroundColor:'rgba(0,166,147,0.08)',fill:true,tension:0.4,
+      pointRadius:4,pointHoverRadius:6
+    }]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}}}
+});
+
+// Education chart
+new Chart(document.getElementById('eduChart'),{
+  type:'bar',
+  data:{
+    labels:['Cardiology','Respiratory','Prescribing','Clinical Reasoning','OSCE Skills'],
+    datasets:[
+      {label:'Before AI tools',data:[61,58,63,55,67],backgroundColor:'#CBD5E1',borderRadius:4},
+      {label:'After AI tools',data:[78,82,80,76,88],backgroundColor:'#00A693',borderRadius:4}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{min:40,max:100,ticks:{callback:v=>v+'%'}}}}
+});
+
+// Admin chart
+new Chart(document.getElementById('adminChart'),{
+  type:'bar',
+  data:{
+    labels:['Consultant','Registrar','SHO / F2','GP','ED Doctor'],
+    datasets:[{
+      label:'Hours saved per day',
+      data:[2.8,2.1,1.8,3.2,2.5],
+      backgroundColor:['#0D2B4E','#1A3F6A','#00A693','#0E7B6E','#F59E0B'],
+      borderRadius:6
+    }]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:4,ticks:{callback:v=>v+'h'}}}}
+});
+
+// Research chart
+new Chart(document.getElementById('researchChart'),{
+  type:'bar',
+  data:{
+    labels:['Abstract screening','Full-text review','Data extraction','Quality assessment','Meta-analysis prep'],
+    datasets:[
+      {label:'Without AI (hours)',data:[120,80,60,40,30],backgroundColor:'#CBD5E1',borderRadius:4},
+      {label:'With AI (hours)',data:[8,35,15,22,12],backgroundColor:'#00A693',borderRadius:4}
+    ]
+  },
+  options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top'}},
+    scales:{x:{ticks:{callback:v=>v+'h'}}}
+  }
+});
+
+// QI chart
+new Chart(document.getElementById('qiChart'),{
+  type:'bar',
+  data:{
+    labels:['Sepsis detected early (%)','ICU transfers prevented (%)','28-day mortality (%)', 'Mean time to antibiotics (min)'],
+    datasets:[
+      {label:'Before AI deployment',data:[42,null,24,95],backgroundColor:'#CBD5E1',borderRadius:4},
+      {label:'After AI deployment',data:[78,null,18,52],backgroundColor:'#DC2626',borderRadius:4}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{min:0}}}
+});
+
+// Diagnostics chart
+new Chart(document.getElementById('diagChart'),{
+  type:'bar',
+  data:{
+    labels:['Chest X-ray (pneumonia)','Diabetic retinopathy','Skin lesion (melanoma)','Lung cancer (CT)','ECG (AF)'],
+    datasets:[
+      {label:'AI Sensitivity (%)',data:[90,91,95,94,97],backgroundColor:'#00A693',borderRadius:4},
+      {label:'Clinician Sensitivity (%)',data:[73,73,82,79,84],backgroundColor:'#1A3F6A',borderRadius:4}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{min:60,max:100,ticks:{callback:v=>v+'%'}}}}
+});
+
+// ── GLOSSARY ──
+const glossTerms = [
+  {term:'Algorithm',cat:'Foundations',color:'pill-blue',def:'A set of step-by-step rules a computer follows to solve a problem.',ex:'A sepsis screening algorithm: IF (temp>38 OR <36) AND (HR>90) AND (RR>20) → flag for assessment.'},
+  {term:'Machine Learning (ML)',cat:'Foundations',color:'pill-blue',def:'AI that improves its performance by learning from data without being explicitly programmed.',ex:'An ML model trained on 50,000 ECGs learns to detect AF without anyone telling it what AF looks like.'},
+  {term:'Deep Learning',cat:'Foundations',color:'pill-teal',def:'A type of ML using multi-layered neural networks that can learn very complex patterns.',ex:'Detects subtle ground-glass opacities on HRCT suggesting early fibrosis — patterns a junior radiologist may miss.'},
+  {term:'Neural Network',cat:'Foundations',color:'pill-blue',def:'Computing architecture inspired by brain neurons, with layers of connected "nodes" processing information.',ex:'Each layer analyses increasingly complex features: layer 1 detects edges on CXR → layer 12 recognises "consolidation."'},
+  {term:'NLP',cat:'Language AI',color:'pill-purple',def:'Natural Language Processing — AI that reads, understands, and generates human text.',ex:'Reads Sarah\'s referral letter and extracts "SOB, 3 days, productive cough, O2 93%" as structured clinical data.'},
+  {term:'LLM',cat:'Language AI',color:'pill-purple',def:'Large Language Model — an AI trained on vast text data to generate and understand language (e.g. GPT-4, Claude).',ex:'ChatGPT writes a discharge letter in plain English for Sarah, explaining her pneumonia diagnosis and home management.'},
+  {term:'Training Data',cat:'ML Concepts',color:'pill-teal',def:'The historical dataset used to teach an AI model patterns and relationships.',ex:'100,000 labelled chest X-rays ("pneumonia / normal") used to train an AI radiologist tool.'},
+  {term:'Supervised Learning',cat:'ML Concepts',color:'pill-teal',def:'ML where every training example has a correct label — the AI learns from known answers.',ex:'ECG labelled "STEMI" teaches the AI what a STEMI looks like — analogous to a teaching case in a cardiology firm.'},
+  {term:'Unsupervised Learning',cat:'ML Concepts',color:'pill-teal',def:'ML where the AI finds patterns in unlabelled data without pre-defined categories.',ex:'An AI clusters 10,000 admitted patients by symptom patterns — discovering 4 distinct sepsis phenotypes previously unrecognised.'},
+  {term:'Hallucination',cat:'Risks',color:'pill-red',def:'When an AI generates confident-sounding but factually incorrect information.',ex:'An LLM inventing a drug dosage or citing a paper that does not exist — critical patient safety risk if unchecked.'},
+  {term:'Bias',cat:'Risks',color:'pill-red',def:'Systematic error in AI outputs, often from unrepresentative training data.',ex:'A dermatology AI trained mostly on Caucasian skin performs poorly at detecting melanoma in dark skin — diagnostic inequity.'},
+  {term:'Explainability',cat:'Governance',color:'pill-amber',def:'The degree to which humans can understand why an AI made a particular decision.',ex:'"This patient\'s sepsis risk is HIGH because their lactate is 4.2, RR is 26, and BP has dropped 20mmHg in 2 hours."'},
+  {term:'Sensitivity',cat:'Performance',color:'pill-green',def:'The proportion of true positives correctly identified (True Positive Rate). Key for screening tests.',ex:'AI chest X-ray tool: 90% sensitivity for pneumonia = correctly identifies 9/10 true pneumonia cases.'},
+  {term:'Specificity',cat:'Performance',color:'pill-green',def:'The proportion of true negatives correctly identified. Key for ruling out disease.',ex:'AI sepsis model: 85% specificity = 15 false alarms per 100 non-sepsis patients — risk of alert fatigue.'},
+  {term:'CDSS',cat:'Clinical AI',color:'pill-teal',def:'Clinical Decision Support System — AI embedded in clinical workflows to assist decisions.',ex:'Auto-calculates CURB-65 score for Sarah, recommends IV co-amoxiclav and hospital admission based on severity criteria.'},
+  {term:'EHR / EMR',cat:'Infrastructure',color:'pill-navy',def:'Electronic Health/Medical Record — the digital clinical record, often AI-enhanced.',ex:'Epic EHR predicts Sarah\'s deterioration risk in real time by analysing her vital signs, labs, and nursing observations continuously.'},
+  {term:'Prompt Engineering',cat:'Language AI',color:'pill-purple',def:'The skill of crafting precise instructions to get reliable, accurate outputs from AI tools.',ex:'"As a respiratory consultant, generate a differential diagnosis for a 45-year-old with CRP 147, consolidation, and Sp0₂ 93%."'},
+  {term:'Ambient AI',cat:'Clinical AI',color:'pill-teal',def:'AI that passively listens to clinical encounters and automatically generates documentation.',ex:'Nuance DAX Copilot listens as the consultant examines Sarah and auto-creates a structured A&E note in the EHR.'},
+  {term:'Federated Learning',cat:'ML Concepts',color:'pill-blue',def:'ML where models are trained across multiple hospitals without raw patient data leaving each site.',ex:'10 NHS Trusts collaborate to train a sepsis AI — each hospital trains locally; only model "weights" are shared, not patient data.'},
+  {term:'Inference',cat:'ML Concepts',color:'pill-blue',def:'The process of applying a trained AI model to new, real-world data to generate outputs.',ex:'The trained pneumonia AI analyses Sarah\'s chest X-ray (inference) and flags consolidation — this is not training, it\'s live use.'},
+  {term:'Algorithm Bias',cat:'Risks',color:'pill-red',def:'Systematic unfairness in AI outputs arising from skewed training data or flawed design.',ex:'The "Obermeyer algorithm" used skin colour as a proxy for healthcare need — Black patients scored lower, reducing care access.'},
+  {term:'Digital Twin',cat:'Emerging AI',color:'pill-amber',def:'A virtual model of a patient or system, updated in real time, used to simulate treatment outcomes.',ex:'A virtual Sarah — modelling her physiology — simulates the effect of different antibiotic regimens before prescribing begins.'}
+];
+
+function buildGlossary(){
+  const g=document.getElementById('glossGrid');
+  const colors={'Foundations':'pill-blue','Language AI':'pill-purple','ML Concepts':'pill-teal','Risks':'pill-red','Performance':'pill-green','Governance':'pill-amber','Clinical AI':'pill-teal','Infrastructure':'pill-blue','Emerging AI':'pill-amber'};
+  glossTerms.forEach(t=>{
+    const c=document.createElement('div');
+    c.className='gloss-card';
+    c.innerHTML=`<span class="gloss-category"><span class="pill ${colors[t.cat]||'pill-blue'}">${t.cat}</span></span>
+      <div class="gloss-front"><div class="gloss-term">${t.term}</div><div class="gloss-hint">Click to reveal definition</div></div>
+      <div class="gloss-back"><strong style="color:var(--navy);display:block;margin-bottom:6px;">${t.term}</strong>${t.def}<br><br><em style="color:var(--teal-dark);">🩺 ${t.ex}</em></div>`;
+    c.onclick=()=>c.classList.toggle('flipped');
+    g.appendChild(c);
+  });
+}
+
+// ── WORKBOOK ──
+const selfCheckItems=[
+  'I can explain the difference between Machine Learning and Deep Learning',
+  'I have used an AI tool (ChatGPT, Copilot, etc.) for a clinical or educational purpose in the last 3 months',
+  'I understand what "training data" means and why it matters for AI performance',
+  'I am aware of at least one AI tool used in my clinical specialty',
+  'I understand what "AI hallucination" means and the patient safety implications',
+  'I have considered the ethical implications of AI in my clinical practice',
+  'I am familiar with the term CDSS (Clinical Decision Support System)',
+  'I know what NLP (Natural Language Processing) is and can name one clinical use case',
+  'I have read or heard about the NHS Federated Data Platform',
+  'I feel confident explaining basic AI concepts to a patient or colleague'
+];
+
+const matchTerms=[
+  {term:'Supervised Learning',example:'Radiologist labels 50,000 chest X-rays "TB" or "Normal" before training the AI'},
+  {term:'NLP',example:'AI reads discharge summaries and extracts clinical diagnoses automatically'},
+  {term:'Hallucination',example:'An LLM confidently states "metformin dose is 500mg TDS" for a patient in AKI stage 3'},
+  {term:'Ambient AI',example:'Doctor speaks during a ward round; clinical notes appear in the EHR automatically'},
+  {term:'Federated Learning',example:'Five NHS Trusts train a sepsis model together without sharing raw patient data'},
+];
+
+const mcqs=[
+  {
+    q:'A 67-year-old man with COPD is admitted. The hospital\'s EHR AI flags his deterioration risk as "HIGH" based on rising RR, falling Sp0₂, and new confusion. This is an example of:',
+    opts:['A) Clinical Decision Support System (CDSS)','B) Natural Language Processing (NLP)','C) Unsupervised Machine Learning','D) A Large Language Model (LLM)'],
+    correct:0,
+    explanation:'Correct — A. This is a CDSS using ML to analyse structured EHR data (vitals, labs) and generate a risk prediction in real time. NLP analyses unstructured text; unsupervised ML finds unlabelled patterns; LLMs generate text.'
+  },
+  {
+    q:'A dermatology AI trained entirely on images from Caucasian patients shows 92% sensitivity for melanoma in white patients but only 61% sensitivity in Black patients. This is primarily due to:',
+    opts:['A) Algorithm hallucination','B) Training data bias','C) Poor model specificity','D) Overfitting to test data'],
+    correct:1,
+    explanation:'Correct — B. The AI\'s training data did not adequately represent diverse skin tones, causing it to underperform in Black patients. This is training data bias — a critical patient safety issue. This is the basis of real-world NHS DEI concerns around AI diagnostic tools.'
+  },
+  {
+    q:'Your medical school wants to use an AI tool to mark students\' short-answer examination responses. The AI has been trained on 10,000 previously marked scripts. Which type of AI is this?',
+    opts:['A) Unsupervised learning','B) Reinforcement learning','C) Supervised learning','D) Deep reinforcement learning'],
+    correct:2,
+    explanation:'Correct — C. Supervised learning. Each of the 10,000 training scripts had a correct "label" (the human mark) — the AI learned to predict marks from known answers. This is directly analogous to a registrar learning to mark via feedback from a consultant examiner.'
+  },
+  {
+    q:'Sarah\'s doctor uses ChatGPT to help write her discharge letter. The letter contains a statement that "co-amoxiclav is safe to use in penicillin allergy as long as the dose is reduced." This is:',
+    opts:['A) Correct — LLMs always cite NICE guidelines','B) A dangerous hallucination — LLMs can fabricate confident-sounding errors','C) Fine, because the doctor should still review it','D) An example of AI bias in prescribing'],
+    correct:1,
+    explanation:'Correct — B. Co-amoxiclav is CONTRAINDICATED in penicillin allergy — not safe at any dose. This is a classic AI hallucination: factually dangerous, confidently stated. While the doctor should review (C is partly true), the primary concern is that hallucinations can mislead busy clinicians. Always verify AI clinical outputs against authoritative sources.'
+  },
+  {
+    q:'Which of the following AI applications does NOT require patient data to be shared with an external company?',
+    opts:['A) Using ChatGPT to write a referral letter including patient details','B) Uploading a patient\'s CT scan to a free online AI analysis tool','C) Using federated learning where the AI trains locally on Trust data only','D) Sending discharge summaries to an LLM API for automated coding'],
+    correct:2,
+    explanation:'Correct — C. Federated learning trains AI models locally without raw patient data leaving the Trust — only model parameters are shared. Options A, B, and D all involve sharing identifiable or clinical patient data with external systems — potentially breaching UK GDPR and NHS DSPT requirements without appropriate governance.'
+  }
+];
+
+const reflections=[
+  {q:'Think about your current clinical role. Identify ONE administrative task that takes you more than 30 minutes per day. How might an AI tool reduce this burden? What would you do with the time saved?',ph:'e.g. Writing clinic letters takes me 45 minutes per day. An AI documentation tool could reduce this to 10 minutes. I would use the time to see one additional patient in each clinic...'},
+  {q:'Name a clinical situation in your specialty where an AI tool might miss something important that an experienced clinician would catch. What are the risks? How would you mitigate them?',ph:'e.g. In geriatrics, an AI frailty score doesn\'t capture the patient\'s social situation or family preferences — which often determine whether hospital admission is appropriate...'},
+  {q:'A patient asks you: "Doctor, is a computer making decisions about my care?" What would you say? Write your response as you would actually deliver it in the consultation room.',ph:'e.g. "That\'s a great question. We do use some clever computer tools that help us analyse your test results — a bit like a very fast calculator. But every decision about your care is made by me and the medical team...'},
+  {q:'Which section of this playbook (Education / Administration / Research / Quality Improvement / Diagnostics) do you think will have the biggest positive impact on your practice? Why? And what is your biggest concern?',ph:'I think QI and early warning systems will have the biggest impact because... My biggest concern is...'}
+];
+
+const caseMcqs=[
+  {
+    q:'The AI CDSS in the A&E automatically calculates Sarah\'s CURB-65 score as 3 (Confusion: No, Urea >7: Yes, RR ≥30: Yes, BP <90: No, Age ≥65: No). What should the F2 doctor do?',
+    opts:['A) Override the AI score — the patient is only 45 so cannot be that unwell','B) Follow the CURB-65 3 protocol: consider hospital admission and IV antibiotics','C) Wait for the AI to suggest a specific antibiotic before prescribing','D) Discharge with oral antibiotics as the AI score may be inaccurate'],
+    correct:1,
+    explanation:'Correct — B. CURB-65 of 3 indicates SEVERE community-acquired pneumonia — hospital admission and IV antibiotics are recommended (per BTS/NICE guidelines). The AI correctly calculated from EHR data. The F2 should act on this — AI assists with the calculation, but the clinical decision remains theirs. Never wait for AI to prescribe (C); never dismiss a validated AI score without clinical reasoning (A).'
+  },
+  {
+    q:'The radiology AI flags Sarah\'s CXR as "right lower lobe consolidation — POSSIBLE PNEUMONIA." The on-call radiologist has not yet reported it. What is the most appropriate response?',
+    opts:['A) Act on the AI finding immediately without waiting for the radiologist — AI is more accurate','B) Ignore the AI flag — only the radiologist\'s formal report should guide clinical decisions','C) Use the AI finding to support clinical suspicion and initiate treatment, pending formal radiologist report','D) Ask the AI to perform additional analysis before treating Sarah'],
+    correct:2,
+    explanation:'Correct — C. The AI flag supports your clinical suspicion (productive cough, fever, Sp0₂ 93%) and should be used to prompt earlier treatment — while awaiting the formal radiologist report. This is the ideal human-AI collaboration: AI accelerates action, human clinician maintains oversight and final accountability. Never act on AI alone (A) or ignore AI flags in clinically corroborating scenarios (B).'
+  }
+];
+
+// ── MATCHING GAME STATE ──
+let matchSelected = null; // currently selected term index
+let matchPairs = {}; // {termIndex: exampleText}
+
+function selectTerm(i) {
+  // Deselect if already selected
+  if(matchSelected === i) {
+    document.getElementById('mterm'+i).style.borderColor='#BFDBFE';
+    document.getElementById('mterm'+i).style.boxShadow='none';
+    matchSelected = null;
+    return;
+  }
+  // Deselect previous
+  if(matchSelected !== null) {
+    const prev = document.getElementById('mterm'+matchSelected);
+    if(prev) { prev.style.borderColor='#BFDBFE'; prev.style.boxShadow='none'; }
+  }
+  matchSelected = i;
+  const card = document.getElementById('mterm'+i);
+  card.style.borderColor='#1D4ED8';
+  card.style.boxShadow='0 0 0 3px rgba(59,130,246,0.3)';
+}
+
+function selectExample(ex, exIdx) {
+  if(matchSelected === null) {
+    // Flash the example to indicate nothing selected
+    const card = document.getElementById('mexample'+exIdx);
+    card.style.borderColor='var(--amber)';
+    setTimeout(()=>{ card.style.borderColor='#99E6DD'; },600);
+    return;
+  }
+  // Remove any previous pairing for this term
+  const prevEx = matchPairs[matchSelected];
+  if(prevEx !== undefined) {
+    // Unmark the old example card
+    document.querySelectorAll('[data-example]').forEach(c=>{
+      if(c.getAttribute('data-example')===prevEx) {
+        c.style.background='var(--teal-light)';
+        c.style.borderColor='#99E6DD';
+        c.style.opacity='1';
+      }
+    });
+  }
+  // Check if this example was already taken by another term
+  Object.keys(matchPairs).forEach(ti=>{
+    if(matchPairs[ti]===ex && parseInt(ti)!==matchSelected) {
+      document.getElementById('mterm'+ti).style.background='var(--blue-light)';
+      document.getElementById('mterm'+ti).style.opacity='1';
+      delete matchPairs[ti];
+    }
+  });
+
+  // Make the pair
+  matchPairs[matchSelected] = ex;
+
+  // Style the term card as paired
+  const termCard = document.getElementById('mterm'+matchSelected);
+  termCard.style.borderColor='var(--teal-dark)';
+  termCard.style.boxShadow='none';
+  termCard.style.background='#DBEAFE';
+
+  // Style the example card as paired
+  const exCard = document.getElementById('mexample'+exIdx);
+  exCard.style.background='#B2F0E8';
+  exCard.style.borderColor='var(--teal-dark)';
+
+  // Show pairing label under term card
+  const existing = document.getElementById('mpair'+matchSelected);
+  if(existing) existing.remove();
+  const label = document.createElement('div');
+  label.id='mpair'+matchSelected;
+  label.style.cssText='font-size:0.7rem;color:var(--teal-dark);margin-top:3px;padding:0 4px;line-height:1.4;';
+  label.textContent='→ '+ex.substring(0,40)+(ex.length>40?'…':'');
+  termCard.insertAdjacentElement('afterend', label);
+
+  matchSelected = null;
+  // Reset term borders
+  matchTerms.forEach((_,i)=>{
+    const c=document.getElementById('mterm'+i);
+    if(c && !matchPairs[i]) { c.style.borderColor='#BFDBFE'; c.style.boxShadow='none'; }
+  });
+}
+
+function checkMatchAnswers() {
+  let correct=0;
+  matchTerms.forEach((t,i)=>{
+    const termCard=document.getElementById('mterm'+i);
+    const label=document.getElementById('mpair'+i);
+    if(!matchPairs[i]) {
+      termCard.style.borderColor='var(--amber)';
+      return;
+    }
+    if(matchPairs[i]===t.example) {
+      correct++;
+      termCard.style.background='var(--green-light)';
+      termCard.style.borderColor='var(--green)';
+      termCard.style.color='#065F46';
+      if(label) { label.style.color='#065F46'; label.textContent='✅ '+label.textContent.replace('→ ',''); }
+    } else {
+      termCard.style.background='var(--red-light)';
+      termCard.style.borderColor='var(--red)';
+      termCard.style.color='var(--red)';
+      if(label) { label.style.color='var(--red)'; }
+      // Show correct answer
+      const correct_label = document.createElement('div');
+      correct_label.style.cssText='font-size:0.7rem;color:#065F46;margin-top:2px;padding:0 4px;line-height:1.4;';
+      correct_label.textContent='✅ '+t.example.substring(0,45)+(t.example.length>45?'…':'');
+      if(label) label.insertAdjacentElement('afterend',correct_label);
+      else termCard.insertAdjacentElement('afterend',correct_label);
+    }
+  });
+  // Show score
+  const existing = document.getElementById('matchScore');
+  if(existing) existing.remove();
+  const scoreDiv = document.createElement('div');
+  scoreDiv.id='matchScore';
+  scoreDiv.style.cssText=`margin-top:14px;padding:12px 16px;border-radius:8px;font-weight:700;font-size:0.9rem;background:${correct===matchTerms.length?'var(--green-light)':'var(--amber-light)'};color:${correct===matchTerms.length?'#065F46':'#92400E'};border:1px solid ${correct===matchTerms.length?'#6EE7B7':'#FCD34D'};`;
+  scoreDiv.textContent = correct===matchTerms.length ? `🎉 Perfect! ${correct}/${matchTerms.length} correct!` : `${correct}/${matchTerms.length} correct — incorrect answers shown in red above`;
+  document.getElementById('matchSection').appendChild(scoreDiv);
+}
+
+function resetMatch() {
+  matchPairs={};
+  matchSelected=null;
+  buildWorkbook();
+  window.wbBuilt=false;
+  document.getElementById('matchSection').innerHTML='';
+  document.getElementById('selfcheck').innerHTML='';
+  document.getElementById('mcqSection').innerHTML='';
+  document.getElementById('reflectSection').innerHTML='';
+  document.getElementById('caseSection').innerHTML='';
+  buildWorkbook();
+  window.wbBuilt=true;
+}
+
+function buildWorkbook(){
+  // Self-check
+  const sc=document.getElementById('selfcheck');
+  selfCheckItems.forEach((item,i)=>{
+    sc.innerHTML+=`<div class="checklist-item"><input type="checkbox" id="ck${i}"><label for="ck${i}">${item}</label></div>`;
+  });
+  sc.innerHTML+=`<p style="font-size:0.82rem;color:var(--gray-400);margin-top:14px;padding-top:14px;border-top:1px solid var(--gray-100);">Scoring: 8-10 ticks: You have a solid AI foundation — focus on hands-on tools in the course. 5-7 ticks: Good start — the course will fill important gaps. 0-4 ticks: This course is perfectly timed for you — come with an open, curious mind.</p>`;
+
+  // Matching — mobile-friendly tap-to-connect cards
+  const ms=document.getElementById('matchSection');
+  const opts=matchTerms.map(t=>t.example);
+  const shuffled=[...opts].sort(()=>Math.random()-0.5);
+
+  ms.innerHTML=`
+    <p style="font-size:0.875rem;color:var(--gray-500);margin-bottom:16px;">
+      <strong style="color:var(--navy);">How to play:</strong> Tap a <span style="background:var(--blue-light);color:#1D4ED8;padding:1px 6px;border-radius:4px;font-weight:700;">Term</span> on the left, then tap an <span style="background:var(--teal-light);color:var(--teal-dark);padding:1px 6px;border-radius:4px;font-weight:700;">Example</span> on the right to connect them.
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+      <div>
+        <p style="font-size:0.75rem;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">AI Terms</p>
+        <div id="matchTermsCol" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+      <div>
+        <p style="font-size:0.75rem;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Clinical Examples</p>
+        <div id="matchExamplesCol" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </div>
+    <div id="matchLines" style="margin-bottom:12px;"></div>
+  `;
+
+  // Render term cards
+  const termsCol=document.getElementById('matchTermsCol');
+  matchTerms.forEach((t,i)=>{
+    const card=document.createElement('div');
+    card.id=`mterm${i}`;
+    card.setAttribute('data-index',i);
+    card.style.cssText='background:var(--blue-light);border:2px solid #BFDBFE;border-radius:8px;padding:10px 12px;font-size:0.82rem;font-weight:700;color:#1D4ED8;cursor:pointer;transition:all 0.15s;min-height:52px;display:flex;align-items:center;line-height:1.3;';
+    card.textContent=t.term;
+    card.onclick=()=>selectTerm(i);
+    termsCol.appendChild(card);
+  });
+
+  // Render example cards
+  const examplesCol=document.getElementById('matchExamplesCol');
+  shuffled.forEach((ex,i)=>{
+    const card=document.createElement('div');
+    card.id=`mexample${i}`;
+    card.setAttribute('data-example',ex);
+    card.style.cssText='background:var(--teal-light);border:2px solid #99E6DD;border-radius:8px;padding:10px 12px;font-size:0.78rem;color:var(--teal-dark);cursor:pointer;transition:all 0.15s;min-height:52px;display:flex;align-items:center;line-height:1.4;';
+    card.textContent=ex;
+    card.onclick=()=>selectExample(ex,i);
+    examplesCol.appendChild(card);
+  });
+
+  const matchBtn=document.createElement('button');
+  matchBtn.className='wb-btn';matchBtn.style.marginTop='8px';matchBtn.textContent='✓ Check my answers';
+  matchBtn.onclick=checkMatchAnswers;
+  ms.appendChild(matchBtn);
+
+  const matchReset=document.createElement('button');
+  matchReset.className='wb-btn';matchReset.style.cssText='margin-top:8px;margin-left:10px;background:var(--gray-500);';
+  matchReset.textContent='↺ Reset';
+  matchReset.onclick=resetMatch;
+  ms.appendChild(matchReset);
+
+  // MCQ
+  const mq=document.getElementById('mcqSection');
+  mcqs.forEach((q,qi)=>{
+    const qd=document.createElement('div');qd.className='wb-q';
+    qd.innerHTML=`<div class="wb-q-num">Question ${qi+1} of ${mcqs.length}</div>
+      <div class="wb-q-text">${q.q}</div>
+      <div class="wb-options">${q.opts.map((o,oi)=>`<label class="wb-option"><input type="radio" name="mcqQ${qi}" value="${oi}"> ${o}</label>`).join('')}</div>
+      <div id="fbq${qi}" class="wb-answer"></div>`;
+    const btn=document.createElement('button');btn.className='wb-btn';btn.textContent='Check answer';
+    btn.onclick=()=>{
+      const sel=qd.querySelector(`input[name="mcqQ${qi}"]:checked`);
+      const fb=document.getElementById('fbq'+qi);
+      if(!sel){fb.style.display='block';fb.className='wb-answer incorrect';fb.textContent='Please select an answer.';return;}
+      fb.style.display='block';
+      if(parseInt(sel.value)===q.correct){fb.className='wb-answer correct';fb.innerHTML='✅ '+q.explanation;}
+      else{fb.className='wb-answer incorrect';fb.innerHTML='❌ '+q.explanation;}
+    };
+    qd.appendChild(btn);mq.appendChild(qd);
+  });
+
+  // Reflections
+  const rs=document.getElementById('reflectSection');
+  reflections.forEach((r,i)=>{
+    rs.innerHTML+=`<div class="wb-q"><div class="wb-q-num">Reflection ${i+1}</div><div class="wb-q-text">${r.q}</div><textarea class="reflect-box" placeholder="${r.ph}"></textarea></div>`;
+  });
+
+  // Case MCQs
+  const cs=document.getElementById('caseSection');
+  caseMcqs.forEach((q,qi)=>{
+    const qd=document.createElement('div');qd.className='wb-q';
+    qd.innerHTML=`<div class="wb-q-num">Case Question ${qi+1}</div>
+      <div class="wb-q-text">${q.q}</div>
+      <div class="wb-options">${q.opts.map((o,oi)=>`<label class="wb-option"><input type="radio" name="caseQ${qi}" value="${oi}"> ${o}</label>`).join('')}</div>
+      <div id="cfb${qi}" class="wb-answer"></div>`;
+    const btn=document.createElement('button');btn.className='wb-btn';btn.textContent='Check answer';
+    btn.onclick=()=>{
+      const sel=qd.querySelector(`input[name="caseQ${qi}"]:checked`);
+      const fb=document.getElementById('cfb'+qi);
+      if(!sel){fb.style.display='block';fb.className='wb-answer incorrect';fb.textContent='Please select an answer.';return;}
+      fb.style.display='block';
+      if(parseInt(sel.value)===q.correct){fb.className='wb-answer correct';fb.innerHTML='✅ '+q.explanation;}
+      else{fb.className='wb-answer incorrect';fb.innerHTML='❌ '+q.explanation;}
+    };
+    qd.appendChild(btn);cs.appendChild(qd);
+  });
+  window.wbBuilt=true;
+}
+</script>
+</body>
+</html>
